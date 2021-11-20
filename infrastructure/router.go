@@ -1,7 +1,6 @@
 package infrastructure
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -12,7 +11,7 @@ import (
 
 type Handlers struct{}
 
-func NewServer() *traqbot.BotServer {
+func NewServer(cmdNames map[string]struct{}) *traqbot.BotServer {
 	h := traqbot.EventHandlers{}
 	h.SetMessageCreatedHandler(func(pl *traqbot.MessageCreatedPayload) {
 		if pl.Message.User.Bot {
@@ -23,10 +22,8 @@ func NewServer() *traqbot.BotServer {
 		log.Println("INFO: Message created", text)
 
 		args := strings.Fields(text)
-		cmds := ls("../cmd")
-		if _, ok := cmds[args[0]]; ok {
+		if _, ok := cmdNames[args[0]]; ok {
 			cmds := injectCmds(pl)
-
 			if err := cmds.Execute(args); err != nil {
 				traq.MustPostMessage(pl.Message.ChannelID, err.Error())
 			}
@@ -36,24 +33,4 @@ func NewServer() *traqbot.BotServer {
 	traq.MustPostMessage(traq.GpsTimesRasBot, "デプロイ完了やんね！:kinano.rotate:")
 
 	return traqbot.NewBotServer(os.Getenv("BOT_VERIFICATION_TOKEN"), h)
-}
-
-func ls(dir string) map[string]struct{} {
-	files, err := ioutil.ReadDir(dir)
-	if err != nil {
-		panic(err)
-	}
-
-	cmds := make(map[string]struct{})
-
-	for _, file := range files {
-		cmd := strings.Replace(file.Name(), ".go", "", 1)
-		if cmd == "root" {
-			continue
-		}
-
-		cmds[cmd] = struct{}{}
-	}
-
-	return cmds
 }
