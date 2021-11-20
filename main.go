@@ -12,7 +12,10 @@ import (
 func main() {
 	h := traqbot.EventHandlers{}
 	h.SetMessageCreatedHandler(func(payload *traqbot.MessageCreatedPayload) {
-		args := strings.Fields(payload.Message.PlainText)
+		text := payload.Message.PlainText
+		log.Println("INFO: Message created", text)
+
+		args := strings.Fields(text)
 		cmd.Execute(args)
 	})
 

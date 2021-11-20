@@ -5,8 +5,7 @@ Copyright © 2021 Ras96 <asymptote.k.k@gmail.com>
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/Ras96/traq-kinano-cli/util/traq"
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +20,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("pong")
+		traq.MustPostMessage(traq.GpsTimesRasBot, "pong!!!")
 	},
 }
 

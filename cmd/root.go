@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-
 	"github.com/spf13/viper"
 )
 
@@ -35,7 +34,7 @@ to quickly create a Cobra application.`,
 func Execute(args []string) error {
 	rootCmd.SetArgs(args)
 
-	return rootCmd.Execute()
+	return rootCmd.Execute() //nolint:wrapcheck
 }
 
 func init() {
