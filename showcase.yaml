@@ -1,0 +1,15 @@
+type: 'runtime'
+
+startup: |
+  go mod download
+  go build -o main
+
+https: on
+
+use_mariadb: true
+entrypoint: './main'
+
+http_proxy: 80
+
+branch:
+  main: null

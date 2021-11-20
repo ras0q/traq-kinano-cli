@@ -1,0 +1,20 @@
+run:
+  skip-dirs:
+    - (^|/).git($|/)
+    - (^|/)tmp($|/)
+
+linters:
+  enable-all: true
+  disable:
+    # deprecated
+    - golint
+    - scopelint
+    - maligned
+    - interfacer
+    # don't use
+    - gochecknoglobals
+    - godot
+    - gochecknoinits
+    - exhaustivestruct
+    - varnamelen
+    - ireturn
