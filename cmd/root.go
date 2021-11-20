@@ -55,6 +55,11 @@ to quickly create a Cobra application.`,
 func (c *Cmds) Execute(args []string) error {
 	root := c.rootCmd()
 	root.SetArgs(args)
+	root.SetHelpFunc(func(cmd *cobra.Command, args []string) {
+		traq.MustPostMessage(c.payload.Message.ChannelID, fmt.Sprintf("```\n%s\n```", cmd.HelpTemplate()))
+	})
+
+	// Add Subcommands
 	root.AddCommand(
 		c.pingCmd(),
 	)
