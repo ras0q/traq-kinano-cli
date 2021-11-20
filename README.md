@@ -11,7 +11,7 @@ git remote set-url --add origin ssh://git@git.trap.jp:2200/Ras/traq-kinano-cli.g
 ### Initialize cmd
 
 ```sh
-cobra init -l none -a "Ras96 <asymptote.k.k@gmail.com>" --pkg-name github.com/Ras96/traq-kinano-cli
+cobra init -l=none -a="Ras96 <asymptote.k.k@gmail.com>" --viper=false --pkg-name=github.com/Ras96/traq-kinano-cli
 ```
 
 ### Add cmd
