@@ -33,6 +33,8 @@ func NewServer() *traqbot.BotServer {
 		}
 	})
 
+	traq.MustPostMessage(traq.GpsTimesRasBot, "デプロイ完了やんね！:kinano.rotate:")
+
 	return traqbot.NewBotServer(os.Getenv("BOT_VERIFICATION_TOKEN"), h)
 }
 
