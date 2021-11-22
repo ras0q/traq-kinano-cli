@@ -22,7 +22,9 @@ func NewServer(cmdNames map[string]struct{}) *traqbot.BotServer {
 		log.Println("[INFO]Message created: ", text)
 
 		args := strings.Fields(text)
-		args = removeHeadMention(pl.Message.Embedded[0], args)
+		if embeds := pl.Message.Embedded; len(embeds) > 0 {
+			args = removeHeadMention(embeds[0], args)
+		}
 
 		if _, ok := cmdNames[args[0]]; ok {
 			cmds := injectCmds(pl)
