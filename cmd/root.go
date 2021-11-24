@@ -13,6 +13,11 @@ import (
 	traqbot "github.com/traPtitech/traq-bot"
 )
 
+var CmdNames = map[string]struct{}{
+	"help": {},
+	"ping": {},
+}
+
 type Cmds struct {
 	h       handler.Handlers
 	payload *traqbot.MessageCreatedPayload

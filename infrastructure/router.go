@@ -5,13 +5,14 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/util/traq"
 	traqbot "github.com/traPtitech/traq-bot"
 )
 
 type Handlers struct{}
 
-func NewServer(cmdNames map[string]struct{}) *traqbot.BotServer {
+func NewServer() *traqbot.BotServer {
 	h := traqbot.EventHandlers{}
 	h.SetMessageCreatedHandler(func(pl *traqbot.MessageCreatedPayload) {
 		if pl.Message.User.Bot {
@@ -26,7 +27,7 @@ func NewServer(cmdNames map[string]struct{}) *traqbot.BotServer {
 			args = removeHeadMention(embeds[0], args)
 		}
 
-		if _, ok := cmdNames[args[0]]; ok {
+		if _, ok := cmd.CmdNames[args[0]]; ok {
 			cmds := injectCmds(pl)
 			if err := cmds.Execute(args); err != nil {
 				traq.MustPostMessage(pl.Message.ChannelID, err.Error())
