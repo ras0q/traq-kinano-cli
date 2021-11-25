@@ -2,10 +2,10 @@ package infrastructure
 
 import (
 	"log"
-	"os"
 	"strings"
 
 	"github.com/Ras96/traq-kinano-cli/cmd"
+	"github.com/Ras96/traq-kinano-cli/util/config"
 	"github.com/Ras96/traq-kinano-cli/util/traq"
 	traqbot "github.com/traPtitech/traq-bot"
 )
@@ -35,14 +35,14 @@ func NewServer() *traqbot.BotServer {
 		}
 	})
 
-	traq.MustPostMessage(traq.GpsTimesRasBot, "デプロイ完了やんね！:kinano.rotate:")
+	traq.MustPostMessage(config.Traq.BotCh, "デプロイ完了やんね！:kinano.rotate:")
 
-	return traqbot.NewBotServer(os.Getenv("BOT_VERIFICATION_TOKEN"), h)
+	return traqbot.NewBotServer(config.Bot.Verificationtoken, h)
 }
 
 // メッセージ先頭にメンションを含む場合はargsから除外する
 func removeHeadMention(embed traqbot.EmbeddedInfoPayload, args []string) []string {
-	if embed.Raw == args[0] && embed.ID == os.Getenv("BOT_USER_ID") {
+	if embed.Raw == args[0] && embed.ID == config.Bot.UserID {
 		args = args[1:]
 	}
 

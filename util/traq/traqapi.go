@@ -2,8 +2,8 @@ package traq
 
 import (
 	"context"
-	"os"
 
+	"github.com/Ras96/traq-kinano-cli/util/config"
 	"github.com/antihax/optional"
 	"github.com/pkg/errors"
 	traqapi "github.com/sapphi-red/go-traq"
@@ -11,9 +11,9 @@ import (
 
 var (
 	client = traqapi.NewAPIClient(traqapi.NewConfiguration())
-	auth   = context.WithValue(context.Background(), traqapi.ContextAccessToken, os.Getenv("BOT_ACCESS_TOKEN"))
+	auth   = context.WithValue(context.Background(), traqapi.ContextAccessToken, config.Bot.Accesstoken)
 
-	GpsTimesRasBot = os.Getenv("TRAQ_GPS_TIMES_RAS_BOT")
+	BotCh = config.Traq.BotCh
 )
 
 func PostMessage(channelID string, content string) (*traqapi.Message, error) {
