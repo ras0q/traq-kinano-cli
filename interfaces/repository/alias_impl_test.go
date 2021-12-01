@@ -1,4 +1,4 @@
-//nolint:wsl,funlen
+//nolint:wsl,funlen,goerr113
 package repository_test
 
 import (
@@ -10,6 +10,7 @@ import (
 	"github.com/Ras96/traq-kinano-cli/ent"
 	impl "github.com/Ras96/traq-kinano-cli/interfaces/repository"
 	repo "github.com/Ras96/traq-kinano-cli/usecases/repository"
+	"github.com/Ras96/traq-kinano-cli/util/assert"
 	"github.com/Ras96/traq-kinano-cli/util/random"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofrs/uuid"
@@ -70,8 +71,8 @@ func Test_repositories_CallAlias(t *testing.T) {
 			r := impl.NewRepositories(tr.client)
 			tt.setup(tr, tt.args, tt.want)
 			got, err := r.CallAlias(context.Background(), tt.args.short)
-			assertErr(t, tt.wantErr, err)
-			assertEqual(t, tt.want, got, cmpopts.IgnoreUnexported(ent.Alias{}))
+			assert.Error(t, tt.wantErr, err)
+			assert.Equal(t, tt.want, got, cmpopts.IgnoreUnexported(ent.Alias{}))
 		})
 	}
 }
@@ -131,6 +132,7 @@ func Test_repositories_AddAlias(t *testing.T) {
 					WillReturnError(errors.New("error creating"))
 				tr.mock.ExpectRollback()
 			},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
@@ -142,8 +144,8 @@ func Test_repositories_AddAlias(t *testing.T) {
 			r := impl.NewRepositories(tr.client)
 			tt.setup(tr, tt.args, tt.want)
 			got, err := r.AddAlias(context.Background(), tt.args.args)
-			assertErr(t, tt.wantErr, err)
-			assertEqual(t, tt.want, got, cmpopts.IgnoreUnexported(ent.Alias{}), cmpopts.IgnoreFields(ent.Alias{}, "ID"))
+			assert.Error(t, tt.wantErr, err)
+			assert.Equal(t, tt.want, got, cmpopts.IgnoreUnexported(ent.Alias{}), cmpopts.IgnoreFields(ent.Alias{}, "ID"))
 		})
 	}
 }
