@@ -11,7 +11,6 @@ require (
 	github.com/golang/mock v1.5.0
 	github.com/google/go-cmp v0.5.6
 	github.com/google/wire v0.5.0
-	github.com/pkg/errors v0.8.1
 	github.com/sapphi-red/go-traq v0.0.0-20210619185243-f487eb63bd8c
 	github.com/spf13/cobra v1.2.1
 	github.com/traPtitech/traq-bot v1.0.2

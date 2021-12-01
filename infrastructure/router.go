@@ -10,6 +10,8 @@ import (
 	"github.com/Ras96/traq-kinano-cli/ent"
 	"github.com/Ras96/traq-kinano-cli/util/config"
 	"github.com/Ras96/traq-kinano-cli/util/traq"
+
+	// mysql driver
 	_ "github.com/go-sql-driver/mysql"
 	traqbot "github.com/traPtitech/traq-bot"
 )
@@ -32,7 +34,7 @@ func NewServer() (*traqbot.BotServer, error) {
 	defer client.Close()
 
 	if err := client.Schema.Create(context.Background()); err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
+		return nil, err
 	}
 
 	// Setup traQ EventHandlers

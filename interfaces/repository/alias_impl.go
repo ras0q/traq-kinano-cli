@@ -13,7 +13,7 @@ func (r *repositories) CallAlias(ctx context.Context, short string) (*ent.Alias,
 	al, err := r.ent.Alias.
 		Query().
 		Where(alias.Short(short)).
-		First(ctx) //TODO: contextを引数にとる
+		First(ctx)
 	if err != nil {
 		return nil, err
 	}
