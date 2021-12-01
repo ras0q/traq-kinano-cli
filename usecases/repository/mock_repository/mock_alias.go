@@ -5,6 +5,7 @@
 package mock_repository
 
 import (
+	context "context"
 	reflect "reflect"
 
 	ent "github.com/Ras96/traq-kinano-cli/ent"
@@ -36,31 +37,31 @@ func (m *MockAliasRepository) EXPECT() *MockAliasRepositoryMockRecorder {
 }
 
 // AddAlias mocks base method.
-func (m *MockAliasRepository) AddAlias(args *repository.AddAliasArgs) (*ent.Alias, error) {
+func (m *MockAliasRepository) AddAlias(ctx context.Context, args *repository.AddAliasArgs) (*ent.Alias, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddAlias", args)
+	ret := m.ctrl.Call(m, "AddAlias", ctx, args)
 	ret0, _ := ret[0].(*ent.Alias)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // AddAlias indicates an expected call of AddAlias.
-func (mr *MockAliasRepositoryMockRecorder) AddAlias(args interface{}) *gomock.Call {
+func (mr *MockAliasRepositoryMockRecorder) AddAlias(ctx, args interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAlias", reflect.TypeOf((*MockAliasRepository)(nil).AddAlias), args)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAlias", reflect.TypeOf((*MockAliasRepository)(nil).AddAlias), ctx, args)
 }
 
 // CallAlias mocks base method.
-func (m *MockAliasRepository) CallAlias(short string) (*ent.Alias, error) {
+func (m *MockAliasRepository) CallAlias(ctx context.Context, short string) (*ent.Alias, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CallAlias", short)
+	ret := m.ctrl.Call(m, "CallAlias", ctx, short)
 	ret0, _ := ret[0].(*ent.Alias)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CallAlias indicates an expected call of CallAlias.
-func (mr *MockAliasRepositoryMockRecorder) CallAlias(short interface{}) *gomock.Call {
+func (mr *MockAliasRepositoryMockRecorder) CallAlias(ctx, short interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CallAlias", reflect.TypeOf((*MockAliasRepository)(nil).CallAlias), short)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CallAlias", reflect.TypeOf((*MockAliasRepository)(nil).CallAlias), ctx, short)
 }

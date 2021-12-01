@@ -2,6 +2,7 @@
 package repository_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -68,7 +69,7 @@ func Test_repositories_CallAlias(t *testing.T) {
 			defer tr.client.Close()
 			r := impl.NewRepositories(tr.client)
 			tt.setup(tr, tt.args, tt.want)
-			got, err := r.CallAlias(tt.args.short)
+			got, err := r.CallAlias(context.Background(), tt.args.short)
 			assertErr(t, tt.wantErr, err)
 			assertEqual(t, tt.want, got, cmpopts.IgnoreUnexported(ent.Alias{}))
 		})
@@ -140,7 +141,7 @@ func Test_repositories_AddAlias(t *testing.T) {
 			defer tr.client.Close()
 			r := impl.NewRepositories(tr.client)
 			tt.setup(tr, tt.args, tt.want)
-			got, err := r.AddAlias(tt.args.args)
+			got, err := r.AddAlias(context.Background(), tt.args.args)
 			assertErr(t, tt.wantErr, err)
 			assertEqual(t, tt.want, got, cmpopts.IgnoreUnexported(ent.Alias{}), cmpopts.IgnoreFields(ent.Alias{}, "ID"))
 		})

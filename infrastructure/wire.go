@@ -5,6 +5,8 @@
 package infrastructure
 
 import (
+	"context"
+
 	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/ent"
 	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
@@ -14,7 +16,7 @@ import (
 	traqbot "github.com/traPtitech/traq-bot"
 )
 
-func injectCmds(client *ent.Client, pl *traqbot.MessageCreatedPayload) *cmd.Cmds {
+func injectCmds(ctx context.Context, client *ent.Client, pl *traqbot.MessageCreatedPayload) *cmd.Cmds {
 	wire.Build(
 		cmd.NewCmds,
 		handler.NewHandlers,

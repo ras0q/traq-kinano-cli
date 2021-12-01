@@ -16,7 +16,7 @@ func (c *Cmds) aliasCmd() *cobra.Command {
 		Short: "A brief description of your command",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.h.CallAlias(c.payload.Message.ChannelID, args[0])
+			return c.h.CallAlias(c.ctx, c.payload.Message.ChannelID, args[0])
 		},
 	}
 
@@ -37,7 +37,7 @@ func (c *Cmds) addAliasCmd() *cobra.Command {
 				return err
 			}
 
-			return c.h.AddAlias(c.payload.Message.ChannelID, userID, args[0], args[1])
+			return c.h.AddAlias(c.ctx, c.payload.Message.ChannelID, userID, args[0], args[1])
 		},
 	}
 

@@ -9,11 +9,11 @@ import (
 	"github.com/Ras96/traq-kinano-cli/util/random"
 )
 
-func (r *repositories) CallAlias(short string) (*ent.Alias, error) {
+func (r *repositories) CallAlias(ctx context.Context, short string) (*ent.Alias, error) {
 	al, err := r.ent.Alias.
 		Query().
 		Where(alias.Short(short)).
-		First(context.Background()) //TODO: contextを引数にとる
+		First(ctx) //TODO: contextを引数にとる
 	if err != nil {
 		return nil, err
 	}
@@ -21,14 +21,14 @@ func (r *repositories) CallAlias(short string) (*ent.Alias, error) {
 	return al, nil
 }
 
-func (r *repositories) AddAlias(args *repository.AddAliasArgs) (*ent.Alias, error) {
+func (r *repositories) AddAlias(ctx context.Context, args *repository.AddAliasArgs) (*ent.Alias, error) {
 	al, err := r.ent.Alias.
 		Create().
 		SetID(random.UUID()).
 		SetUserID(args.UserID).
 		SetShort(args.Short).
 		SetLong(args.Long).
-		Save(context.Background())
+		Save(ctx)
 	if err != nil {
 		return nil, err
 	}

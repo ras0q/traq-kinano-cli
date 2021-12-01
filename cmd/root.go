@@ -5,6 +5,7 @@ Copyright © 2021 Ras96 <asymptote.k.k@gmail.com>
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
@@ -20,12 +21,14 @@ var CmdNames = map[string]struct{}{
 }
 
 type Cmds struct {
+	ctx     context.Context
 	h       handler.Handlers
 	payload *traqbot.MessageCreatedPayload
 }
 
-func NewCmds(h handler.Handlers, pl *traqbot.MessageCreatedPayload) *Cmds {
+func NewCmds(ctx context.Context, h handler.Handlers, pl *traqbot.MessageCreatedPayload) *Cmds {
 	return &Cmds{
+		ctx:     ctx,
 		h:       h,
 		payload: pl,
 	}

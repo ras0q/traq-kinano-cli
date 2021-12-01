@@ -51,7 +51,7 @@ func NewServer() (*traqbot.BotServer, error) {
 		}
 
 		if _, ok := cmd.CmdNames[args[0]]; ok {
-			cmds := injectCmds(client, pl)
+			cmds := injectCmds(context.Background(), client, pl)
 			if err := cmds.Execute(args); err != nil {
 				traq.MustPostMessage(pl.Message.ChannelID, err.Error())
 			}
