@@ -6,6 +6,8 @@ package infrastructure
 
 import (
 	"github.com/Ras96/traq-kinano-cli/cmd"
+	"github.com/Ras96/traq-kinano-cli/ent"
+	"github.com/Ras96/traq-kinano-cli/interfaces/database"
 	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
 	"github.com/Ras96/traq-kinano-cli/interfaces/repository"
 	"github.com/Ras96/traq-kinano-cli/usecases/service"
@@ -13,11 +15,12 @@ import (
 	traqbot "github.com/traPtitech/traq-bot"
 )
 
-func injectCmds(pl *traqbot.MessageCreatedPayload) *cmd.Cmds {
+func injectCmds(client *ent.Client, pl *traqbot.MessageCreatedPayload) *cmd.Cmds {
 	wire.Build(
 		cmd.NewCmds,
 		handler.NewHandlers,
 		repository.NewRepositories,
+		wire.Bind(new(database.SQLHandler), new(*ent.Client)),
 		service.NewServices,
 	)
 

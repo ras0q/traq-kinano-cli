@@ -8,6 +8,7 @@ package infrastructure
 
 import (
 	"github.com/Ras96/traq-kinano-cli/cmd"
+	"github.com/Ras96/traq-kinano-cli/ent"
 	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
 	"github.com/Ras96/traq-kinano-cli/interfaces/repository"
 	"github.com/Ras96/traq-kinano-cli/usecases/service"
@@ -16,8 +17,8 @@ import (
 
 // Injectors from wire.go:
 
-func injectCmds(pl *traqbot.MessageCreatedPayload) *cmd.Cmds {
-	repositories := repository.NewRepositories()
+func injectCmds(client *ent.Client, pl *traqbot.MessageCreatedPayload) *cmd.Cmds {
+	repositories := repository.NewRepositories(client)
 	services := service.NewServices()
 	handlers := handler.NewHandlers(repositories, services)
 	cmds := cmd.NewCmds(handlers, pl)

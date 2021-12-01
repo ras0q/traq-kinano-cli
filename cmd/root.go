@@ -14,8 +14,9 @@ import (
 )
 
 var CmdNames = map[string]struct{}{
-	"help": {},
-	"ping": {},
+	"alias": {},
+	"help":  {},
+	"ping":  {},
 }
 
 type Cmds struct {
@@ -44,15 +45,18 @@ func (c *Cmds) rootCmd() *cobra.Command {
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func (c *Cmds) Execute(args []string) error {
 	root := c.rootCmd()
+	c.addSubCmds(root)
 	root.SetArgs(args)
 	root.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		traq.MustPostMessage(c.payload.Message.ChannelID, fmt.Sprintf("```\n%s```", cmd.UsageString()))
 	})
 
-	// Add Subcommands
-	root.AddCommand(
+	return root.Execute() //nolint:wrapcheck
+}
+
+func (c *Cmds) addSubCmds(cmd *cobra.Command) {
+	cmd.AddCommand(
+		c.aliasCmd(),
 		c.pingCmd(),
 	)
-
-	return root.Execute() //nolint:wrapcheck
 }
