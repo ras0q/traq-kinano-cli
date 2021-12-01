@@ -2,6 +2,8 @@ run:
   skip-dirs:
     - (^|/).git($|/)
     - (^|/)tmp($|/)
+  # skip-files:
+    # - (^|/).+_test.go($|/)
 
 linters:
   enable-all: true

@@ -10,6 +10,7 @@ import (
 	"github.com/Ras96/traq-kinano-cli/ent"
 	"github.com/Ras96/traq-kinano-cli/util/config"
 	"github.com/Ras96/traq-kinano-cli/util/traq"
+	_ "github.com/go-sql-driver/mysql"
 	traqbot "github.com/traPtitech/traq-bot"
 )
 

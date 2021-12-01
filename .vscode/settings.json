@@ -1,6 +1,5 @@
 {
   "go.generateTestsFlags": [
-    "-i",
     "-parallel",
     "-template_dir",
     "/home/ras/ghq/github.com/Ras96/traq-kinano-cli/.vscode/gotests-template/templates"
