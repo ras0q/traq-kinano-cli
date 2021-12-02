@@ -2,7 +2,9 @@ package traq
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log"
 
 	"github.com/Ras96/traq-kinano-cli/util/config"
 	"github.com/antihax/optional"
@@ -36,6 +38,10 @@ func PostMessage(channelID string, content string) (*traqapi.Message, error) {
 
 func MustPostMessage(channelID string, content string) {
 	if _, err := PostMessage(channelID, content); err != nil {
-		panic(err)
+		if errors.Is(err, errors.New("404 Not Found")) {
+			log.Println(err)
+		}
+
+		log.Println(content)
 	}
 }

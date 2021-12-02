@@ -1,4 +1,4 @@
-//nolint:wsl,goerr113
+//nolint:wsl
 package handler_test
 
 import (

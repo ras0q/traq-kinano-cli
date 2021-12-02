@@ -9,10 +9,13 @@ import (
 )
 
 func main() {
-	s, err := infrastructure.NewServer()
+	entClient, err := infrastructure.NewEntClient()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error creating client: ", err)
 	}
+	defer entClient.Close()
 
-	log.Fatal(s.ListenAndServe(fmt.Sprintf(":%d", config.App.Port)))
+	server := infrastructure.NewServer(entClient)
+
+	log.Fatal(server.ListenAndServe(fmt.Sprintf(":%d", config.App.Port))) //nolint:gocritic
 }

@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"strings"
 
@@ -18,25 +17,7 @@ import (
 
 type Handlers struct{}
 
-func NewServer() (*traqbot.BotServer, error) {
-	// Setup ent client
-	client, err := ent.Open("mysql", fmt.Sprintf(
-		"%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&collation=utf8mb4_general_ci",
-		config.SQL.User,
-		config.SQL.Pass,
-		config.SQL.Host,
-		config.SQL.Port,
-		config.SQL.DBName,
-	))
-	if err != nil {
-		log.Fatalf("Could not open database: %v", err)
-	}
-	defer client.Close()
-
-	if err := client.Schema.Create(context.Background()); err != nil {
-		return nil, err
-	}
-
+func NewServer(client *ent.Client) *traqbot.BotServer {
 	// Setup traQ EventHandlers
 	h := traqbot.EventHandlers{}
 	h.SetMessageCreatedHandler(func(pl *traqbot.MessageCreatedPayload) {
@@ -53,7 +34,7 @@ func NewServer() (*traqbot.BotServer, error) {
 		}
 
 		if _, ok := cmd.CmdNames[args[0]]; ok {
-			cmds := injectCmds(context.Background(), client, pl)
+			cmds := InjectCmds(context.Background(), client, pl)
 			if err := cmds.Execute(args); err != nil {
 				traq.MustPostMessage(pl.Message.ChannelID, err.Error())
 			}
@@ -62,7 +43,7 @@ func NewServer() (*traqbot.BotServer, error) {
 
 	traq.MustPostMessage(config.Traq.BotCh, "デプロイ完了やんね！:kinano.rotate:")
 
-	return traqbot.NewBotServer(config.Bot.Verificationtoken, h), nil
+	return traqbot.NewBotServer(config.Bot.Verificationtoken, h)
 }
 
 // メッセージ先頭にメンションを含む場合はargsから除外する

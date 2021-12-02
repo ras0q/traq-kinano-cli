@@ -20,3 +20,4 @@ linters:
     - ireturn
     - wrapcheck
     - gomnd
+    - goerr113

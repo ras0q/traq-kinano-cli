@@ -16,7 +16,7 @@ import (
 	traqbot "github.com/traPtitech/traq-bot"
 )
 
-func injectCmds(ctx context.Context, client *ent.Client, pl *traqbot.MessageCreatedPayload) *cmd.Cmds {
+func InjectCmds(ctx context.Context, client *ent.Client, pl *traqbot.MessageCreatedPayload) *cmd.Cmds {
 	wire.Build(
 		cmd.NewCmds,
 		handler.NewHandlers,
