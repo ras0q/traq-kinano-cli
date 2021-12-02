@@ -1,4 +1,4 @@
-//nolint:wsl,funlen,goerr113
+//nolint:wsl,funlen
 package repository_test
 
 import (
