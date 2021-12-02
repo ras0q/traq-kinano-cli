@@ -5,6 +5,7 @@ Copyright © 2021 Ras96 <asymptote.k.k@gmail.com>
 package cmd
 
 import (
+	"github.com/Ras96/traq-kinano-cli/util/traq"
 	"github.com/gofrs/uuid"
 	"github.com/spf13/cobra"
 )
@@ -16,7 +17,14 @@ func (c *Cmds) aliasCmd() *cobra.Command {
 		Short: "A brief description of your command",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.h.CallAlias(c.ctx, c.payload.Message.ChannelID, args[0])
+			alias, err := c.h.CallAlias(c.ctx, args[0])
+			if err != nil {
+				return err
+			}
+
+			traq.MustPostMessage(c.payload.Message.ChannelID, alias.Long)
+
+			return nil
 		},
 	}
 
@@ -37,7 +45,7 @@ func (c *Cmds) addAliasCmd() *cobra.Command {
 				return err
 			}
 
-			return c.h.AddAlias(c.ctx, c.payload.Message.ChannelID, userID, args[0], args[1])
+			return c.h.AddAlias(c.ctx, userID, args[0], args[1])
 		},
 	}
 

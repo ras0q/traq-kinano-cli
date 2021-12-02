@@ -5,6 +5,7 @@ Copyright © 2021 Ras96 <asymptote.k.k@gmail.com>
 package cmd
 
 import (
+	"github.com/Ras96/traq-kinano-cli/util/traq"
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +15,9 @@ func (c *Cmds) pingCmd() *cobra.Command {
 		Use:   "ping",
 		Short: "Return pong",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.h.Ping(c.payload.Message.ChannelID)
+			traq.MustPostMessage(c.payload.Message.ChannelID, "pong!!!")
+
+			return c.h.Ping()
 		},
 	}
 

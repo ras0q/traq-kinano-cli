@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 
+	"github.com/Ras96/traq-kinano-cli/ent"
 	"github.com/Ras96/traq-kinano-cli/usecases/repository"
 	"github.com/Ras96/traq-kinano-cli/usecases/service"
 	"github.com/gofrs/uuid"
@@ -10,10 +11,10 @@ import (
 
 type Handlers interface {
 	// Alias
-	CallAlias(ctx context.Context, channelID string, short string) error
-	AddAlias(ctx context.Context, channelID string, userID uuid.UUID, short string, long string) error
+	CallAlias(ctx context.Context, short string) (*ent.Alias, error)
+	AddAlias(ctx context.Context, userID uuid.UUID, short string, long string) error
 	// Ping
-	Ping(channelID string) error
+	Ping() error
 }
 
 type handlers struct {
