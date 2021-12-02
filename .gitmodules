@@ -1,0 +1,3 @@
+[submodule ".vscode/gotests-template"]
+	path = .vscode/gotests-template
+	url = git@github.com:Ras96/gotests-template.git

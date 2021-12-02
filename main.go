@@ -9,6 +9,10 @@ import (
 )
 
 func main() {
-	s := infrastructure.NewServer()
+	s, err := infrastructure.NewServer()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	log.Fatal(s.ListenAndServe(fmt.Sprintf(":%d", config.App.Port)))
 }

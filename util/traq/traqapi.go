@@ -2,10 +2,10 @@ package traq
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Ras96/traq-kinano-cli/util/config"
 	"github.com/antihax/optional"
-	"github.com/pkg/errors"
 	traqapi "github.com/sapphi-red/go-traq"
 )
 
@@ -28,7 +28,7 @@ func PostMessage(channelID string, content string) (*traqapi.Message, error) {
 		},
 	)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to post message")
+		return nil, fmt.Errorf("failed to post message: %w", err)
 	}
 
 	return &message, nil

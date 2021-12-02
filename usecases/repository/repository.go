@@ -1,3 +1,5 @@
 package repository
 
-type Repositories interface{}
+type Repositories interface {
+	AliasRepository
+}
