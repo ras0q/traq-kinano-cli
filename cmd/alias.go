@@ -49,7 +49,7 @@ func (c *Cmds) addAliasCmd() *cobra.Command {
 				return err
 			}
 
-			traq.MustAddStamp(c.payload.Message.ChannelID, "attoteki_seicho")
+			traq.MustAddStamp(c.payload.Message.ID, "attoteki_seicho")
 
 			return nil
 		},
