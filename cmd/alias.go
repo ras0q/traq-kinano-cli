@@ -45,7 +45,13 @@ func (c *Cmds) addAliasCmd() *cobra.Command {
 				return err
 			}
 
-			return c.h.AddAlias(c.ctx, userID, args[0], args[1])
+			if err := c.h.AddAlias(c.ctx, userID, args[0], args[1]); err != nil {
+				return err
+			}
+
+			traq.MustAddStamp(c.payload.Message.ChannelID, "attoteki_seicho")
+
+			return nil
 		},
 	}
 
