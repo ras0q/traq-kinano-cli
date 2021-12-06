@@ -13,9 +13,10 @@ import (
 func (c *Cmds) aliasCmd() *cobra.Command {
 	// aliasCmd represents the alias command
 	aliasCmd := &cobra.Command{
-		Use:   "alias",
-		Short: "A brief description of your command",
-		Args:  cobra.ExactArgs(1),
+		Use:     "alias",
+		Short:   "Call aliases",
+		Aliases: []string{"a"},
+		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			alias, err := c.h.CallAlias(c.ctx, args[0])
 			if err != nil {
@@ -37,7 +38,7 @@ func (c *Cmds) addAliasCmd() *cobra.Command {
 	// addAliasCmd represents the addAlias command
 	addAliasCmd := &cobra.Command{
 		Use:   "add",
-		Short: "A brief description of your command",
+		Short: "Add an new alias",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			userID, err := uuid.FromString(c.payload.Message.User.ID)
