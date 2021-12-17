@@ -15,6 +15,7 @@ import (
 )
 
 var CmdNames = map[string]struct{}{
+	"a":     {},
 	"alias": {},
 	"help":  {},
 	"ping":  {},
