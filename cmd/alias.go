@@ -23,7 +23,7 @@ func (c *Cmds) aliasCmd() *cobra.Command {
 				return err
 			}
 
-			traq.MustPostMessage(c.payload.Message.ChannelID, alias.Long)
+			traq.MustPostMessage(c.pl.Message.ChannelID, alias.Long)
 
 			return nil
 		},
@@ -41,7 +41,7 @@ func (c *Cmds) addAliasCmd() *cobra.Command {
 		Short: "Add an new alias",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			userID, err := uuid.FromString(c.payload.Message.User.ID)
+			userID, err := uuid.FromString(c.pl.Message.User.ID)
 			if err != nil {
 				return err
 			}
@@ -50,7 +50,7 @@ func (c *Cmds) addAliasCmd() *cobra.Command {
 				return err
 			}
 
-			traq.MustAddStamp(c.payload.Message.ID, "attoteki_seicho")
+			traq.MustAddStamp(c.pl.Message.ID, "attoteki_seicho")
 
 			return nil
 		},

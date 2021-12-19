@@ -15,7 +15,7 @@ func (c *Cmds) pingCmd() *cobra.Command {
 		Use:   "ping",
 		Short: "Return pong",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			traq.MustPostMessage(c.payload.Message.ChannelID, "pong!!!")
+			traq.MustPostMessage(c.pl.Message.ChannelID, "pong!!!")
 
 			return c.h.Ping()
 		},

@@ -22,16 +22,16 @@ var CmdNames = map[string]struct{}{
 }
 
 type Cmds struct {
-	ctx     context.Context
-	h       handler.Handlers
-	payload *payload.MessageCreated
+	ctx context.Context
+	h   handler.Handlers
+	pl  *payload.MessageCreated
 }
 
 func NewCmds(ctx context.Context, h handler.Handlers, pl *payload.MessageCreated) *Cmds {
 	return &Cmds{
-		ctx:     ctx,
-		h:       h,
-		payload: pl,
+		ctx: ctx,
+		h:   h,
+		pl:  pl,
 	}
 }
 
@@ -52,7 +52,7 @@ func (c *Cmds) Execute(args []string) error {
 	c.addSubCmds(root)
 	root.SetArgs(args)
 	root.SetHelpFunc(func(cmd *cobra.Command, args []string) {
-		traq.MustPostMessage(c.payload.Message.ChannelID, fmt.Sprintf("```\n%s```", cmd.UsageString()))
+		traq.MustPostMessage(c.pl.Message.ChannelID, fmt.Sprintf("```\n%s```", cmd.UsageString()))
 	})
 
 	return root.Execute() //nolint:wrapcheck
