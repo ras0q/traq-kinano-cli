@@ -21,7 +21,7 @@ func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
 	w := NewWriter(config.Bot.Accesstoken)
 
 	b, err := traqbot.NewBot(&traqbot.Options{
-		AccessToken:   config.Bot.Accesstoken,
+		AccessToken:   config.Bot.Verificationtoken,
 		Origin:        "wss://q.trap.jp",
 		AutoReconnect: true,
 	})
