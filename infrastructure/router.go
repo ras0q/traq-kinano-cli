@@ -29,6 +29,10 @@ func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
 		return nil, err
 	}
 
+	b.OnPing(func(pl *payload.Ping) {
+		log.Println("ping fron bot-console")
+	})
+
 	b.OnMessageCreated(func(pl *payload.MessageCreated) {
 		if pl.Message.User.Bot {
 			return
