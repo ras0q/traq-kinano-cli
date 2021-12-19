@@ -50,7 +50,7 @@ func (c *Cmds) Execute(args []string) {
 	root.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		_, _ = c.w.
 			SetChannelID(c.pl.Message.ChannelID).
-			Write([]byte(fmt.Sprintf("```\n%s```", cmd.UsageString())))
+			Write([]byte(fmt.Sprintf("```txt\n%s```", cmd.UsageString())))
 	})
 
 	if err := root.Execute(); err != nil {
