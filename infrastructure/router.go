@@ -12,15 +12,23 @@ import (
 
 	// mysql driver
 	_ "github.com/go-sql-driver/mysql"
-	traqbot "github.com/traPtitech/traq-bot"
+	traqbot "github.com/traPtitech/traq-ws-bot"
+	"github.com/traPtitech/traq-ws-bot/payload"
 )
 
 type Handlers struct{}
 
-func NewServer(client *ent.Client) *traqbot.BotServer {
-	// Setup traQ EventHandlers
-	h := traqbot.EventHandlers{}
-	h.SetMessageCreatedHandler(func(pl *traqbot.MessageCreatedPayload) {
+func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
+	b, err := traqbot.NewBot(&traqbot.Options{
+		AccessToken:   config.Bot.Accesstoken,
+		Origin:        "wss://q.trap.jp",
+		AutoReconnect: true,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	b.OnMessageCreated(func(pl *payload.MessageCreated) {
 		if pl.Message.User.Bot {
 			return
 		}
@@ -41,13 +49,11 @@ func NewServer(client *ent.Client) *traqbot.BotServer {
 		}
 	})
 
-	traq.MustPostMessage(config.Traq.BotCh, "デプロイ完了やんね！:kinano.rotate:")
-
-	return traqbot.NewBotServer(config.Bot.Verificationtoken, h)
+	return b, nil
 }
 
 // メッセージ先頭にメンションを含む場合はargsから除外する
-func removeHeadMention(embed traqbot.EmbeddedInfoPayload, args []string) []string {
+func removeHeadMention(embed payload.EmbeddedInfo, args []string) []string {
 	if embed.Raw == args[0] && embed.ID == config.Bot.UserID {
 		args = args[1:]
 	}

@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/Ras96/traq-kinano-cli/infrastructure"
-	"github.com/Ras96/traq-kinano-cli/util/config"
 )
 
 func main() {
@@ -15,7 +13,10 @@ func main() {
 	}
 	defer entClient.Close()
 
-	server := infrastructure.NewServer(entClient)
+	bot, err := infrastructure.NewWsBot(entClient)
+	if err != nil {
+		log.Fatal("Error creating server: ", err)
+	}
 
-	log.Fatal(server.ListenAndServe(fmt.Sprintf(":%d", config.App.Port))) //nolint:gocritic
+	log.Fatal(bot.Start())
 }

@@ -12,17 +12,17 @@ import (
 
 	"github.com/Ras96/traq-kinano-cli/infrastructure"
 	"github.com/Ras96/traq-kinano-cli/util/random"
-	traqbot "github.com/traPtitech/traq-bot"
+	"github.com/traPtitech/traq-ws-bot/payload"
 )
 
-func newPayload(txt string) *traqbot.MessageCreatedPayload {
-	return &traqbot.MessageCreatedPayload{
-		BasePayload: traqbot.BasePayload{
+func newPayload(txt string) *payload.MessageCreated {
+	return &payload.MessageCreated{
+		Base: payload.Base{
 			EventTime: time.Now(),
 		},
-		Message: traqbot.MessagePayload{
+		Message: payload.Message{
 			ID: random.UUID().String(),
-			User: traqbot.UserPayload{
+			User: payload.User{
 				ID:          random.UUID().String(),
 				Name:        "debug",
 				DisplayName: "debug🔧",
@@ -32,7 +32,7 @@ func newPayload(txt string) *traqbot.MessageCreatedPayload {
 			ChannelID: random.UUID().String(),
 			Text:      txt,
 			PlainText: txt,
-			Embedded:  []traqbot.EmbeddedInfoPayload{},
+			Embedded:  []payload.EmbeddedInfo{},
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		},

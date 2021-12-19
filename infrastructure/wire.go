@@ -13,10 +13,10 @@ import (
 	"github.com/Ras96/traq-kinano-cli/interfaces/repository"
 	"github.com/Ras96/traq-kinano-cli/usecases/service"
 	"github.com/google/wire"
-	traqbot "github.com/traPtitech/traq-bot"
+	"github.com/traPtitech/traq-ws-bot/payload"
 )
 
-func InjectCmds(ctx context.Context, client *ent.Client, pl *traqbot.MessageCreatedPayload) *cmd.Cmds {
+func InjectCmds(ctx context.Context, client *ent.Client, pl *payload.MessageCreated) *cmd.Cmds {
 	wire.Build(
 		cmd.NewCmds,
 		handler.NewHandlers,

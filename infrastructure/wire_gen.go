@@ -13,7 +13,7 @@ import (
 	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
 	"github.com/Ras96/traq-kinano-cli/interfaces/repository"
 	"github.com/Ras96/traq-kinano-cli/usecases/service"
-	"github.com/traPtitech/traq-bot"
+	"github.com/traPtitech/traq-ws-bot/payload"
 )
 
 import (
@@ -22,7 +22,7 @@ import (
 
 // Injectors from wire.go:
 
-func InjectCmds(ctx context.Context, client *ent.Client, pl *traqbot.MessageCreatedPayload) *cmd.Cmds {
+func InjectCmds(ctx context.Context, client *ent.Client, pl *payload.MessageCreated) *cmd.Cmds {
 	repositories := repository.NewRepositories(client)
 	services := service.NewServices()
 	handlers := handler.NewHandlers(repositories, services)

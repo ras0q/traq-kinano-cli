@@ -11,7 +11,7 @@ import (
 	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
 	"github.com/Ras96/traq-kinano-cli/util/traq"
 	"github.com/spf13/cobra"
-	traqbot "github.com/traPtitech/traq-bot"
+	"github.com/traPtitech/traq-ws-bot/payload"
 )
 
 var CmdNames = map[string]struct{}{
@@ -24,10 +24,10 @@ var CmdNames = map[string]struct{}{
 type Cmds struct {
 	ctx     context.Context
 	h       handler.Handlers
-	payload *traqbot.MessageCreatedPayload
+	payload *payload.MessageCreated
 }
 
-func NewCmds(ctx context.Context, h handler.Handlers, pl *traqbot.MessageCreatedPayload) *Cmds {
+func NewCmds(ctx context.Context, h handler.Handlers, pl *payload.MessageCreated) *Cmds {
 	return &Cmds{
 		ctx:     ctx,
 		h:       h,
