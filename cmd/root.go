@@ -50,14 +50,12 @@ func (c *Cmds) Execute(args []string) {
 	root.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		_, _ = c.w.
 			SetChannelID(c.pl.Message.ChannelID).
-			SetEmbed(true).
 			Write([]byte(fmt.Sprintf("```\n%s```", cmd.UsageString())))
 	})
 
 	if err := root.Execute(); err != nil {
 		_, _ = c.w.
 			SetChannelID(c.pl.Message.ChannelID).
-			SetEmbed(true).
 			Write([]byte(fmt.Sprintf("```\n%s```", err.Error())))
 	}
 }

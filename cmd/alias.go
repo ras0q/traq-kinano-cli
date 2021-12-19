@@ -24,7 +24,6 @@ func (c *Cmds) aliasCmd() *cobra.Command {
 
 			_, _ = c.w.
 				SetChannelID(c.pl.Message.ChannelID).
-				SetEmbed(true).
 				Write([]byte(alias.Long))
 
 			return nil
@@ -54,7 +53,6 @@ func (c *Cmds) addAliasCmd() *cobra.Command {
 
 			_, _ = c.w.
 				SetChannelID(c.pl.Message.ChannelID).
-				SetEmbed(true).
 				Write([]byte(":attoteki_seicho:"))
 
 			return nil

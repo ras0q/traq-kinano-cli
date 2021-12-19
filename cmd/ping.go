@@ -16,7 +16,6 @@ func (c *Cmds) pingCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			_, _ = c.w.
 				SetChannelID(c.pl.Message.ChannelID).
-				SetEmbed(true).
 				Write([]byte("pong"))
 
 			return c.h.Ping()

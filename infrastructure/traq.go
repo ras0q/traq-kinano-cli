@@ -13,13 +13,15 @@ type writer struct {
 	client    *traq.APIClient
 	auth      context.Context
 	channelID string
-	embed     bool
+	embed     bool // Default: true
 }
 
 func NewWriter(accessToken string) cmd.Writer {
 	return &writer{
-		client: traq.NewAPIClient(traq.NewConfiguration()),
-		auth:   context.WithValue(context.Background(), traq.ContextAccessToken, config.Bot.Accesstoken),
+		client:    traq.NewAPIClient(traq.NewConfiguration()),
+		auth:      context.WithValue(context.Background(), traq.ContextAccessToken, config.Bot.Accesstoken),
+		channelID: "",
+		embed:     true,
 	}
 }
 
