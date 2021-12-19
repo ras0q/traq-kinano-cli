@@ -16,7 +16,7 @@ import (
 	"github.com/traPtitech/traq-ws-bot/payload"
 )
 
-func InjectCmds(ctx context.Context, client *ent.Client, pl *payload.MessageCreated) *cmd.Cmds {
+func InjectCmds(ctx context.Context, client *ent.Client, pl *payload.MessageCreated, w cmd.Writer) *cmd.Cmds {
 	wire.Build(
 		cmd.NewCmds,
 		handler.NewHandlers,

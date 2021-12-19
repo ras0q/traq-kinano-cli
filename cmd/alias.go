@@ -5,7 +5,6 @@ Copyright © 2021 Ras96 <asymptote.k.k@gmail.com>
 package cmd
 
 import (
-	"github.com/Ras96/traq-kinano-cli/util/traq"
 	"github.com/gofrs/uuid"
 	"github.com/spf13/cobra"
 )
@@ -23,7 +22,10 @@ func (c *Cmds) aliasCmd() *cobra.Command {
 				return err
 			}
 
-			traq.MustPostMessage(c.pl.Message.ChannelID, alias.Long)
+			_, _ = c.w.
+				SetChannelID(c.pl.Message.ChannelID).
+				SetEmbed(true).
+				Write([]byte(alias.Long))
 
 			return nil
 		},
@@ -50,7 +52,10 @@ func (c *Cmds) addAliasCmd() *cobra.Command {
 				return err
 			}
 
-			traq.MustAddStamp(c.pl.Message.ID, "attoteki_seicho")
+			_, _ = c.w.
+				SetChannelID(c.pl.Message.ChannelID).
+				SetEmbed(true).
+				Write([]byte(":attoteki_seicho:"))
 
 			return nil
 		},

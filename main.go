@@ -1,22 +1,20 @@
 package main
 
 import (
-	"log"
-
 	"github.com/Ras96/traq-kinano-cli/infrastructure"
 )
 
 func main() {
 	entClient, err := infrastructure.NewEntClient()
 	if err != nil {
-		log.Fatal("Error creating client: ", err)
+		panic("Error creating client: " + err.Error())
 	}
 	defer entClient.Close()
 
 	bot, err := infrastructure.NewWsBot(entClient)
 	if err != nil {
-		log.Fatal("Error creating server: ", err)
+		panic("Error creating server: " + err.Error())
 	}
 
-	log.Fatal(bot.Start())
+	panic(bot.Start())
 }

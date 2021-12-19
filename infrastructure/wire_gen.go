@@ -22,10 +22,10 @@ import (
 
 // Injectors from wire.go:
 
-func InjectCmds(ctx context.Context, client *ent.Client, pl *payload.MessageCreated) *cmd.Cmds {
+func InjectCmds(ctx context.Context, client *ent.Client, pl *payload.MessageCreated, w cmd.Writer) *cmd.Cmds {
 	repositories := repository.NewRepositories(client)
 	services := service.NewServices()
 	handlers := handler.NewHandlers(repositories, services)
-	cmds := cmd.NewCmds(ctx, handlers, pl)
+	cmds := cmd.NewCmds(ctx, handlers, pl, w)
 	return cmds
 }

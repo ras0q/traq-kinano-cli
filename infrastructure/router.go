@@ -8,7 +8,6 @@ import (
 	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/ent"
 	"github.com/Ras96/traq-kinano-cli/util/config"
-	"github.com/Ras96/traq-kinano-cli/util/traq"
 
 	// mysql driver
 	_ "github.com/go-sql-driver/mysql"
@@ -19,6 +18,8 @@ import (
 type Handlers struct{}
 
 func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
+	w := NewWriter(config.Bot.Accesstoken)
+
 	b, err := traqbot.NewBot(&traqbot.Options{
 		AccessToken:   config.Bot.Accesstoken,
 		Origin:        "wss://q.trap.jp",
@@ -42,10 +43,8 @@ func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
 		}
 
 		if _, ok := cmd.CmdNames[args[0]]; ok {
-			cmds := InjectCmds(context.Background(), client, pl)
-			if err := cmds.Execute(args); err != nil {
-				traq.MustPostMessage(pl.Message.ChannelID, err.Error())
-			}
+			cmds := InjectCmds(context.Background(), client, pl, w)
+			cmds.Execute(args)
 		}
 	})
 

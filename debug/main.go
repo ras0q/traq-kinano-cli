@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/infrastructure"
 	"github.com/Ras96/traq-kinano-cli/util/random"
 	"github.com/traPtitech/traq-ws-bot/payload"
@@ -39,6 +40,25 @@ func newPayload(txt string) *payload.MessageCreated {
 	}
 }
 
+type writer struct{}
+
+func NewWriter() cmd.Writer {
+	return &writer{}
+}
+
+func (w *writer) Write(p []byte) (int, error) {
+	log.Println(string(p))
+	return len(p), nil
+}
+
+func (w *writer) SetChannelID(channelID string) cmd.Writer {
+	return w
+}
+
+func (w *writer) SetEmbed(embed bool) cmd.Writer {
+	return w
+}
+
 func main() {
 	flag.Parse()
 	args := flag.Args()
@@ -48,11 +68,11 @@ func main() {
 	if err == nil {
 		defer entClient.Close()
 	} else {
-		log.Printf("[WARN]failed to create ent client: %v\n", err)
+		log.Println("[WARN]failed to create ent client:", err.Error())
 	}
 
-	cmds := infrastructure.InjectCmds(context.Background(), entClient, pl)
-	if err := cmds.Execute(args); err != nil {
-		log.Println(err.Error())
-	}
+	w := NewWriter()
+
+	cmds := infrastructure.InjectCmds(context.Background(), entClient, pl, w)
+	cmds.Execute(args)
 }

@@ -9,7 +9,6 @@ import (
 	"fmt"
 
 	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
-	"github.com/Ras96/traq-kinano-cli/util/traq"
 	"github.com/spf13/cobra"
 	"github.com/traPtitech/traq-ws-bot/payload"
 )
@@ -25,14 +24,11 @@ type Cmds struct {
 	ctx context.Context
 	h   handler.Handlers
 	pl  *payload.MessageCreated
+	w   Writer
 }
 
-func NewCmds(ctx context.Context, h handler.Handlers, pl *payload.MessageCreated) *Cmds {
-	return &Cmds{
-		ctx: ctx,
-		h:   h,
-		pl:  pl,
-	}
+func NewCmds(ctx context.Context, h handler.Handlers, pl *payload.MessageCreated, w Writer) *Cmds {
+	return &Cmds{ctx, h, pl, w}
 }
 
 func (c *Cmds) rootCmd() *cobra.Command {
@@ -47,15 +43,23 @@ func (c *Cmds) rootCmd() *cobra.Command {
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func (c *Cmds) Execute(args []string) error {
+func (c *Cmds) Execute(args []string) {
 	root := c.rootCmd()
 	c.addSubCmds(root)
 	root.SetArgs(args)
 	root.SetHelpFunc(func(cmd *cobra.Command, args []string) {
-		traq.MustPostMessage(c.pl.Message.ChannelID, fmt.Sprintf("```\n%s```", cmd.UsageString()))
+		_, _ = c.w.
+			SetChannelID(c.pl.Message.ChannelID).
+			SetEmbed(true).
+			Write([]byte(fmt.Sprintf("```\n%s```", cmd.UsageString())))
 	})
 
-	return root.Execute() //nolint:wrapcheck
+	if err := root.Execute(); err != nil {
+		_, _ = c.w.
+			SetChannelID(c.pl.Message.ChannelID).
+			SetEmbed(true).
+			Write([]byte(fmt.Sprintf("```\n%s```", err.Error())))
+	}
 }
 
 func (c *Cmds) addSubCmds(cmd *cobra.Command) {
