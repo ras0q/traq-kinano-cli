@@ -30,7 +30,7 @@ func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
 	}
 
 	b.OnPing(func(pl *payload.Ping) {
-		log.Println("ping fron bot-console")
+		log.Println("ping from bot-console")
 	})
 
 	b.OnMessageCreated(func(pl *payload.MessageCreated) {
