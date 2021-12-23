@@ -9,17 +9,18 @@ import (
 	"github.com/sapphi-red/go-traq"
 )
 
+var (
+	client = traq.NewAPIClient(traq.NewConfiguration())
+	auth   = context.WithValue(context.Background(), traq.ContextAccessToken, config.Bot.Accesstoken)
+)
+
 type writer struct {
-	client    *traq.APIClient
-	auth      context.Context
 	channelID string
 	embed     bool // Default: true
 }
 
 func NewWriter(accessToken string) cmd.Writer {
 	return &writer{
-		client:    traq.NewAPIClient(traq.NewConfiguration()),
-		auth:      context.WithValue(context.Background(), traq.ContextAccessToken, config.Bot.Accesstoken),
 		channelID: "",
 		embed:     true,
 	}
@@ -39,8 +40,8 @@ func (w *writer) SetEmbed(embed bool) cmd.Writer {
 
 // Implement io.Writer interface
 func (w *writer) Write(p []byte) (int, error) {
-	_, _, err := w.client.MessageApi.PostMessage(
-		w.auth,
+	_, _, err := client.MessageApi.PostMessage(
+		auth,
 		w.channelID,
 		&traq.MessageApiPostMessageOpts{
 			PostMessageRequest: optional.NewInterface(traq.PostMessageRequest{
