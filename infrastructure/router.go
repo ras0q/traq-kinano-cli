@@ -11,6 +11,7 @@ import (
 	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/ent"
 	"github.com/Ras96/traq-kinano-cli/util/config"
+	"github.com/robfig/cron"
 
 	// mysql driver
 	_ "github.com/go-sql-driver/mysql"
@@ -19,24 +20,24 @@ import (
 )
 
 func SetupCron() {
-	// c := cron.New()
-	// c.AddFunc("0 0 0 * *", func() {
-	img, err := generateWordcloud()
-	if err != nil {
-		panic(fmt.Errorf("Error generating wordcloud: %w", err))
-	}
+	c := cron.NewWithLocation(time.FixedZone("Asia/Tokyo", 9*60*60))
+	c.AddFunc("0 50 23 * *", func() {
+		img, err := generateWordcloud()
+		if err != nil {
+			panic(fmt.Errorf("Error generating wordcloud: %w", err))
+		}
 
-	file, _ := os.Create("wordcloud.png")
-	defer file.Close()
+		file, _ := os.Create("wordcloud.png")
+		defer file.Close()
 
-	if err := png.Encode(file, img); err != nil {
-		panic(fmt.Errorf("Error encoding wordcloud: %w", err))
-	}
+		if err := png.Encode(file, img); err != nil {
+			panic(fmt.Errorf("Error encoding wordcloud: %w", err))
+		}
 
-	// if err := SendFile(file, config.Traq.BotCh); err != nil {
-	// 	panic(fmt.Errorf("Error sending wordcloud: %w", err))
-	// }
-	// })
+		if err := SendFile(file, config.Traq.BotCh); err != nil {
+			panic(fmt.Errorf("Error sending wordcloud: %w", err))
+		}
+	})
 
 	// c.Start()
 }

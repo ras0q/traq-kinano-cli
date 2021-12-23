@@ -13,7 +13,7 @@ require (
 	github.com/google/go-cmp v0.5.6
 	github.com/google/wire v0.5.0
 	github.com/psykhi/wordclouds v0.0.0-20210822210240-4b9d0b119a32
-	github.com/robfig/cron/v3 v3.0.1
+	github.com/robfig/cron v1.2.0
 	github.com/sapphi-red/go-traq v0.0.0-20210619185243-f487eb63bd8c
 	github.com/spf13/cobra v1.2.1
 	github.com/traPtitech/traq-ws-bot v1.0.2
