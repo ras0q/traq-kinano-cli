@@ -2,7 +2,10 @@ package infrastructure
 
 import (
 	"context"
+	"fmt"
+	"image/png"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/Ras96/traq-kinano-cli/cmd"
@@ -15,7 +18,28 @@ import (
 	"github.com/traPtitech/traq-ws-bot/payload"
 )
 
-type Handlers struct{}
+func SetupCron() {
+	// c := cron.New()
+	// c.AddFunc("0 0 0 * *", func() {
+	img, err := generateWordcloud()
+	if err != nil {
+		panic(fmt.Errorf("Error generating wordcloud: %w", err))
+	}
+
+	file, _ := os.Create("wordcloud.png")
+	defer file.Close()
+
+	if err := png.Encode(file, img); err != nil {
+		panic(fmt.Errorf("Error encoding wordcloud: %w", err))
+	}
+
+	// if err := SendFile(file, config.Traq.BotCh); err != nil {
+	// 	panic(fmt.Errorf("Error sending wordcloud: %w", err))
+	// }
+	// })
+
+	// c.Start()
+}
 
 func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
 	w := NewWriter(config.Bot.Accesstoken)

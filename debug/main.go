@@ -64,6 +64,8 @@ func main() {
 	args := flag.Args()
 	pl := newPayload(strings.Join(args, " "))
 
+	infrastructure.SetupCron()
+
 	entClient, err := infrastructure.NewEntClient()
 	if err == nil {
 		defer entClient.Close()
