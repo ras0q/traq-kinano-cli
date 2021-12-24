@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/ent"
@@ -39,7 +40,7 @@ func SetupCron() {
 		}
 	})
 
-	// c.Start()
+	c.Start()
 }
 
 func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
