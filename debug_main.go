@@ -1,11 +1,13 @@
-package main_test
+//go:build debug
+// +build debug
+
+package main
 
 import (
 	"context"
 	"flag"
 	"log"
 	"strings"
-	"testing"
 	"time"
 
 	"github.com/Ras96/traq-kinano-cli/cmd"
@@ -57,13 +59,15 @@ func (w *writer) SetEmbed(embed bool) cmd.Writer {
 	return w
 }
 
-func Test_main(t *testing.T) {
+func main() {
 	flag.Parse()
 	args := flag.Args()
 	pl := newPayload(strings.Join(args, " "))
 
-	if err := infrastructure.PostWordcloutToTraq(); err != nil {
-		t.Fatal(err)
+	w := NewWriter()
+
+	if err := infrastructure.PostWordcloutToTraq(w); err != nil {
+		log.Fatal(err)
 	}
 
 	entClient, err := infrastructure.NewEntClient()
@@ -73,7 +77,6 @@ func Test_main(t *testing.T) {
 		log.Println("[WARN]failed to create ent client:", err.Error())
 	}
 
-	w := NewWriter()
 
 	cmds := infrastructure.InjectCmds(context.Background(), entClient, pl, w)
 	cmds.Execute(args)

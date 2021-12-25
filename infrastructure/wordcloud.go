@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/util/config"
 	mecab "github.com/bluele/mecab-golang"
 	"github.com/psykhi/wordclouds"
@@ -89,7 +90,7 @@ func parseToNode(msgs []string) (map[string]int, error) {
 	return wordMap, nil
 }
 
-func PostWordcloutToTraq() error {
+func PostWordcloutToTraq(w cmd.Writer) error {
 	img, err := generateWordcloud()
 	if err != nil {
 		return fmt.Errorf("Error generating wordcloud: %w", err)
@@ -114,7 +115,7 @@ func PostWordcloutToTraq() error {
 		return fmt.Errorf("Error sending wordcloud: %w", err)
 	}
 
-	NewWriter().
+	w.
 		SetChannelID(cid).
 		Write([]byte("https://q.trap.jp/files/" + fid))
 
