@@ -1,7 +1,18 @@
 package infrastructure
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"mime/multipart"
+	"net/http"
+	"net/textproto"
+	"os"
+	"regexp"
+	"sync"
+	"time"
 
 	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/util/config"
@@ -9,17 +20,18 @@ import (
 	"github.com/sapphi-red/go-traq"
 )
 
+var (
+	client = traq.NewAPIClient(traq.NewConfiguration())
+	auth   = context.WithValue(context.Background(), traq.ContextAccessToken, config.Bot.Accesstoken)
+)
+
 type writer struct {
-	client    *traq.APIClient
-	auth      context.Context
 	channelID string
 	embed     bool // Default: true
 }
 
-func NewWriter(accessToken string) cmd.Writer {
+func NewWriter() cmd.Writer {
 	return &writer{
-		client:    traq.NewAPIClient(traq.NewConfiguration()),
-		auth:      context.WithValue(context.Background(), traq.ContextAccessToken, config.Bot.Accesstoken),
 		channelID: "",
 		embed:     true,
 	}
@@ -39,8 +51,8 @@ func (w *writer) SetEmbed(embed bool) cmd.Writer {
 
 // Implement io.Writer interface
 func (w *writer) Write(p []byte) (int, error) {
-	_, _, err := w.client.MessageApi.PostMessage(
-		w.auth,
+	_, _, err := client.MessageApi.PostMessage(
+		auth,
 		w.channelID,
 		&traq.MessageApiPostMessageOpts{
 			PostMessageRequest: optional.NewInterface(traq.PostMessageRequest{
@@ -54,4 +66,112 @@ func (w *writer) Write(p []byte) (int, error) {
 	}
 
 	return len(p), nil
+}
+
+func CreateTraqFile(file *os.File, channelID string) (string, error) {
+	// NOTE: go-traqがcontent-typeをapplication/octet-streamにしてしまうので自前でAPIを叩く
+	var b bytes.Buffer
+	mw := multipart.NewWriter(&b)
+
+	mh := make(textproto.MIMEHeader)
+	mh.Set("Content-Type", "image/png")
+	mh.Set("Content-Disposition", fmt.Sprintf(`form-data; name="file"; filename="%s"`, file.Name()))
+
+	pw, err := mw.CreatePart(mh)
+	if err != nil {
+		return "", fmt.Errorf("failed to create part: %w", err)
+	}
+
+	if _, err := io.Copy(pw, file); err != nil {
+		return "", fmt.Errorf("failed to copy file: %w", err)
+	}
+
+	contentType := mw.FormDataContentType()
+	mw.Close()
+
+	req, err := http.NewRequest(
+		"POST",
+		fmt.Sprintf("https://q.trap.jp/api/v3/files?channelId=%s", channelID),
+		&b,
+	)
+	if err != nil {
+		return "", fmt.Errorf("Error creating request: %w", err)
+	}
+
+	req.Header.Set("Content-Type", contentType)
+	req.Header.Set("Authorization", "Bearer "+config.Bot.Accesstoken)
+
+	client := new(http.Client)
+	res, err := client.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("Error sending request: %w", err)
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode >= 300 {
+		b, _ := io.ReadAll(res.Body)
+
+		return "", fmt.Errorf("Error creating file: %s %s", res.Status, string(b))
+	}
+
+	var traqFile traq.FileInfo
+	if err := json.NewDecoder(res.Body).Decode(&traqFile); err != nil {
+		return "", fmt.Errorf("Error decoding response: %w", err)
+	}
+
+	return traqFile.Id, nil
+}
+
+func getTraqDailyMsgs() ([]string, error) {
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+
+	var (
+		nowJST = time.Now().UTC().In(jst)
+		after  = optional.NewTime(time.Date(nowJST.Year(), nowJST.Month(), nowJST.Day(), 0, 0, 0, 0, jst).UTC())
+		before = optional.NewTime(time.Date(nowJST.Year(), nowJST.Month(), nowJST.Day(), 23, 59, 59, 59, jst).UTC())
+		limit  = optional.NewInt32(100)
+		bot    = optional.NewBool(false)
+		hasURL = optional.NewBool(false)
+		r      = regexp.MustCompile(`!\{.+\}`)
+		msgs   = make([]string, 0, 5000)
+	)
+
+	searchFunc := func(offset int32) int {
+		res, _, _ := client.MessageApi.SearchMessages(
+			auth,
+			&traq.MessageApiSearchMessagesOpts{
+				Before: before,
+				After:  after,
+				Limit:  limit,
+				Offset: optional.NewInt32(int32(offset * 100)),
+				Bot:    bot,
+				HasURL: hasURL,
+			},
+		)
+
+		for _, msg := range res.Hits {
+			if msg.Content != "" {
+				plain := r.ReplaceAllString(msg.Content, "")
+				msgs = append(msgs, plain)
+			}
+		}
+
+		return len(res.Hits)
+	}
+
+	// 総メッセージ数を取得するために1かい先にAPIを叩く
+	totalHits := searchFunc(0)
+
+	num := totalHits / 100 // 並列で回す数
+	wg := sync.WaitGroup{}
+	wg.Add(num)
+	for i := 0; i < num; i++ {
+		go func(i int) {
+			defer wg.Done()
+			searchFunc(int32(i))
+		}(i)
+	}
+	wg.Wait()
+
+	return msgs, nil
 }

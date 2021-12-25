@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 	"strconv"
 )
@@ -54,7 +55,9 @@ func init() {
 
 func mustGetenv(name string) string {
 	if env := os.Getenv(name); env == "" {
-		panic("env " + name + " is not set")
+		log.Println("env " + name + " is not set")
+
+		return ""
 	} else {
 		return env
 	}
@@ -62,7 +65,9 @@ func mustGetenv(name string) string {
 
 func mustAtoi(s string) int {
 	if i, err := strconv.Atoi(s); err != nil {
-		panic("atoi failed: " + err.Error())
+		log.Println("atoi failed: " + err.Error())
+
+		return 0
 	} else {
 		return i
 	}

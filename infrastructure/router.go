@@ -4,10 +4,12 @@ import (
 	"context"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/ent"
 	"github.com/Ras96/traq-kinano-cli/util/config"
+	"github.com/robfig/cron"
 
 	// mysql driver
 	_ "github.com/go-sql-driver/mysql"
@@ -15,10 +17,21 @@ import (
 	"github.com/traPtitech/traq-ws-bot/payload"
 )
 
-type Handlers struct{}
+func SetupCron() {
+	w := NewWriter()
+
+	c := cron.NewWithLocation(time.FixedZone("Asia/Tokyo", 9*60*60))
+	c.AddFunc("0 50 23 * *", func() {
+		if err := PostWordcloudToTraq(w); err != nil {
+			log.Println("[ERROR]", err)
+		}
+	})
+
+	c.Start()
+}
 
 func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
-	w := NewWriter(config.Bot.Accesstoken)
+	w := NewWriter()
 
 	b, err := traqbot.NewBot(&traqbot.Options{
 		AccessToken:   config.Bot.Accesstoken,

@@ -64,6 +64,12 @@ func main() {
 	args := flag.Args()
 	pl := newPayload(strings.Join(args, " "))
 
+	w := NewWriter()
+
+	if err := infrastructure.PostWordcloudToTraq(w); err != nil {
+		panic(err)
+	}
+
 	entClient, err := infrastructure.NewEntClient()
 	if err == nil {
 		defer entClient.Close()
@@ -71,7 +77,6 @@ func main() {
 		log.Println("[WARN]failed to create ent client:", err.Error())
 	}
 
-	w := NewWriter()
 
 	cmds := infrastructure.InjectCmds(context.Background(), entClient, pl, w)
 	cmds.Execute(args)

@@ -5,6 +5,8 @@ import (
 )
 
 func main() {
+	infrastructure.SetupCron()
+
 	entClient, err := infrastructure.NewEntClient()
 	if err != nil {
 		panic("Error creating client: " + err.Error())
