@@ -26,7 +26,8 @@ type sqlCfg struct {
 }
 
 type traqCfg struct {
-	BotCh string
+	HomeCh string
+	BotCh  string
 }
 
 var (
@@ -50,25 +51,24 @@ func init() {
 	SQL.Port = mustAtoi(mustGetenv("MARIADB_PORT"))
 	SQL.DBName = mustGetenv("MARIADB_DATABASE")
 
+	Traq.HomeCh = mustGetenv("TRAQ_HOME_CHANNEL_ID")
 	Traq.BotCh = mustGetenv("TRAQ_BOT_CHANNEL_ID")
 }
 
 func mustGetenv(name string) string {
-	if env := os.Getenv(name); env == "" {
+	env := os.Getenv(name)
+	if env == "" {
 		log.Println("env " + name + " is not set")
-
-		return ""
-	} else {
-		return env
 	}
+
+	return env
 }
 
 func mustAtoi(s string) int {
-	if i, err := strconv.Atoi(s); err != nil {
+	i, err := strconv.Atoi(s)
+	if err != nil {
 		log.Println("atoi failed: " + err.Error())
-
-		return 0
-	} else {
-		return i
 	}
+
+	return i
 }

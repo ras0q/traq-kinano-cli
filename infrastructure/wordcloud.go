@@ -113,7 +113,7 @@ func PostWordcloudToTraq(w cmd.Writer) error {
 
 	file.Seek(0, os.SEEK_SET)
 
-	cid := config.Traq.BotCh
+	cid := config.Traq.HomeCh
 	fid, err := CreateTraqFile(file, cid)
 	if err != nil {
 		return fmt.Errorf("Error creating wordcloud: %w", err)
