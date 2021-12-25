@@ -2,11 +2,7 @@ package infrastructure
 
 import (
 	"context"
-	"fmt"
-	"image/png"
 	"log"
-	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -24,33 +20,9 @@ import (
 func SetupCron() {
 	c := cron.NewWithLocation(time.FixedZone("Asia/Tokyo", 9*60*60))
 	c.AddFunc("0 50 23 * *", func() {
-		img, err := generateWordcloud()
-		if err != nil {
-			panic(fmt.Errorf("Error generating wordcloud: %w", err))
+		if err := PostWordcloutToTraq(); err != nil {
+			log.Println("[ERROR]", err)
 		}
-
-		path, _ := filepath.Abs("./wordcloud.png")
-		file, err := os.Create(path)
-		if err != nil {
-			panic(fmt.Errorf("Error creating wordcloud file: %w", err))
-		}
-		defer file.Close()
-
-		if err := png.Encode(file, img); err != nil {
-			panic(fmt.Errorf("Error encoding wordcloud: %w", err))
-		}
-
-		file.Seek(0, os.SEEK_SET)
-
-		cid := config.Traq.BotCh
-		fid, err := SendFile(file, cid)
-		if err != nil {
-			panic(fmt.Errorf("Error sending wordcloud: %w", err))
-		}
-
-		NewWriter().
-			SetChannelID(cid).
-			Write([]byte("https://q.trap.jp/files/" + fid))
 	})
 
 	c.Start()

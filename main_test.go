@@ -1,10 +1,11 @@
-package main
+package main_test
 
 import (
 	"context"
 	"flag"
 	"log"
 	"strings"
+	"testing"
 	"time"
 
 	"github.com/Ras96/traq-kinano-cli/cmd"
@@ -56,12 +57,14 @@ func (w *writer) SetEmbed(embed bool) cmd.Writer {
 	return w
 }
 
-func main() {
+func Test_main(t *testing.T) {
 	flag.Parse()
 	args := flag.Args()
 	pl := newPayload(strings.Join(args, " "))
 
-	infrastructure.SetupCron()
+	if err := infrastructure.PostWordcloutToTraq(); err != nil {
+		t.Fatal(err)
+	}
 
 	entClient, err := infrastructure.NewEntClient()
 	if err == nil {
