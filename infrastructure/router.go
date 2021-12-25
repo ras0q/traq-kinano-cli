@@ -65,6 +65,10 @@ func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
 		}
 	})
 
+	w.
+		SetChannelID(config.Traq.BotCh).
+		Write([]byte("デプロイ完了!"))
+
 	return b, nil
 }
 
