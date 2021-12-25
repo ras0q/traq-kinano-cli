@@ -40,14 +40,17 @@ func SetupCron() {
 			panic(fmt.Errorf("Error encoding wordcloud: %w", err))
 		}
 
-		file, err = os.Open(path)
-		if err != nil {
-			panic(fmt.Errorf("Error opening wordcloud file: %w", err))
-		}
+		file.Seek(0, os.SEEK_SET)
 
-		if err := SendFile(file, config.Traq.BotCh); err != nil {
+		cid := config.Traq.BotCh
+		fid, err := SendFile(file, cid)
+		if err != nil {
 			panic(fmt.Errorf("Error sending wordcloud: %w", err))
 		}
+
+		NewWriter().
+			SetChannelID(cid).
+			Write([]byte("https://q.trap.jp/files/" + fid))
 	})
 
 	c.Start()

@@ -62,21 +62,21 @@ func (w *writer) Write(p []byte) (int, error) {
 	return len(p), nil
 }
 
-func SendFile(file *os.File, channelID string) error {
-	_, res, err := client.FileApi.PostFile(
+func SendFile(file *os.File, channelID string) (string, error) {
+	f, res, err := client.FileApi.PostFile(
 		auth,
 		file,
 		channelID,
 	)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	if res.StatusCode != 200 {
-		return fmt.Errorf("Error sending file: %s", res.Status)
+	if res.StatusCode >= 300 {
+		return "", fmt.Errorf("Error sending file: %s", res.Status)
 	}
 
-	return nil
+	return f.Id, nil
 }
 
 func getTraqDailyMsgs() ([]string, error) {
