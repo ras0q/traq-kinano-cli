@@ -7,6 +7,8 @@ startup: |
   cd mecab-0.996
   ./configure
   make
+  make check
+  make install
 
   cd ~
   wget -O mecab-ipadic-2.7.0-20070801.tar.gz "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM"
@@ -14,6 +16,7 @@ startup: |
   cd mecab-ipadic-2.7.0-20070801
   ./configure --with-charset=utf8
   make
+  make install
 
   cd /srv
   export CGO_LDFLAGS="`mecab-config --libs`"
