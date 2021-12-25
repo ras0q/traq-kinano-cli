@@ -1,8 +1,14 @@
 package infrastructure
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"mime/multipart"
+	"net/http"
+	"net/textproto"
 	"os"
 	"regexp"
 	"sync"
@@ -62,21 +68,50 @@ func (w *writer) Write(p []byte) (int, error) {
 	return len(p), nil
 }
 
-func SendFile(file *os.File, channelID string) (string, error) {
-	f, res, err := client.FileApi.PostFile(
-		auth,
-		file,
-		channelID,
+func CreateTraqFile(file *os.File, channelID string) (string, error) {
+	// NOTE: go-traqがcontent-typeをapplication/octet-streamにしてしまうので自前でAPIを叩く
+	var b bytes.Buffer
+	mw := multipart.NewWriter(&b)
+
+	defer mw.Close()
+	mw.Close()
+
+	mh := make(textproto.MIMEHeader)
+	mh.Set("Content-Type", "image/png")
+	mh.Set("Content-Disposition", fmt.Sprintf(`form-data; name="file"; filename="%s"`, file.Name()))
+
+	pw, err := mw.CreatePart(mh)
+	io.Copy(pw, file)
+
+	req, err := http.NewRequest(
+		"POST",
+		fmt.Sprintf("https://q.trap.jp/api/v3/files?channelId=%s", channelID),
+		&b,
 	)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Error creating request: %w", err)
 	}
+
+	req.Header.Set("Content-Type", mw.FormDataContentType())
+	req.Header.Set("Authorization", "Bearer "+config.Bot.Accesstoken)
+
+	client := new(http.Client)
+	res, err := client.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("Error sending request: %w", err)
+	}
+	defer res.Body.Close()
 
 	if res.StatusCode >= 300 {
 		return "", fmt.Errorf("Error sending file: %s", res.Status)
 	}
 
-	return f.Id, nil
+	var traqFile traq.FileInfo
+	if err := json.NewDecoder(res.Body).Decode(&traqFile); err != nil {
+		return "", fmt.Errorf("Error decoding response: %w", err)
+	}
+
+	return traqFile.Id, nil
 }
 
 func getTraqDailyMsgs() ([]string, error) {

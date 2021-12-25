@@ -67,7 +67,7 @@ func main() {
 	w := NewWriter()
 
 	if err := infrastructure.PostWordcloutToTraq(w); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	entClient, err := infrastructure.NewEntClient()
