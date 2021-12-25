@@ -66,7 +66,7 @@ func main() {
 
 	w := NewWriter()
 
-	if err := infrastructure.PostWordcloutToTraq(w); err != nil {
+	if err := infrastructure.PostWordcloudToTraq(w); err != nil {
 		panic(err)
 	}
 

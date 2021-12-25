@@ -94,7 +94,7 @@ func parseToNode(msgs []string) (map[string]int, error) {
 	return wordMap, nil
 }
 
-func PostWordcloutToTraq(w cmd.Writer) error {
+func PostWordcloudToTraq(w cmd.Writer) error {
 	img, err := generateWordcloud()
 	if err != nil {
 		return fmt.Errorf("Error generating wordcloud: %w", err)
@@ -116,7 +116,7 @@ func PostWordcloutToTraq(w cmd.Writer) error {
 	cid := config.Traq.BotCh
 	fid, err := CreateTraqFile(file, cid)
 	if err != nil {
-		return fmt.Errorf("Error sending wordcloud: %w", err)
+		return fmt.Errorf("Error creating wordcloud: %w", err)
 	}
 
 	w.

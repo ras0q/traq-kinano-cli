@@ -73,15 +73,21 @@ func CreateTraqFile(file *os.File, channelID string) (string, error) {
 	var b bytes.Buffer
 	mw := multipart.NewWriter(&b)
 
-	defer mw.Close()
-	mw.Close()
-
 	mh := make(textproto.MIMEHeader)
 	mh.Set("Content-Type", "image/png")
 	mh.Set("Content-Disposition", fmt.Sprintf(`form-data; name="file"; filename="%s"`, file.Name()))
 
 	pw, err := mw.CreatePart(mh)
-	io.Copy(pw, file)
+	if err != nil {
+		return "", fmt.Errorf("failed to create part: %w", err)
+	}
+
+	if _, err := io.Copy(pw, file); err != nil {
+		return "", fmt.Errorf("failed to copy file: %w", err)
+	}
+
+	contentType := mw.FormDataContentType()
+	mw.Close()
 
 	req, err := http.NewRequest(
 		"POST",
@@ -92,7 +98,7 @@ func CreateTraqFile(file *os.File, channelID string) (string, error) {
 		return "", fmt.Errorf("Error creating request: %w", err)
 	}
 
-	req.Header.Set("Content-Type", mw.FormDataContentType())
+	req.Header.Set("Content-Type", contentType)
 	req.Header.Set("Authorization", "Bearer "+config.Bot.Accesstoken)
 
 	client := new(http.Client)
@@ -105,7 +111,7 @@ func CreateTraqFile(file *os.File, channelID string) (string, error) {
 	if res.StatusCode >= 300 {
 		b, _ := io.ReadAll(res.Body)
 
-		return "", fmt.Errorf("Error sending file: %s %s", res.Status, string(b))
+		return "", fmt.Errorf("Error creating file: %s %s", res.Status, string(b))
 	}
 
 	var traqFile traq.FileInfo
@@ -117,12 +123,12 @@ func CreateTraqFile(file *os.File, channelID string) (string, error) {
 }
 
 func getTraqDailyMsgs() ([]string, error) {
-	time.FixedZone("Asia/Tokyo", 9*60*60)
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 
 	var (
-		now    = time.Now()
-		after  = optional.NewTime(time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location()))
-		before = optional.NewTime(time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 59, now.Location()))
+		nowJST = time.Now().UTC().In(jst)
+		after  = optional.NewTime(time.Date(nowJST.Year(), nowJST.Month(), nowJST.Day(), 0, 0, 0, 0, jst).UTC())
+		before = optional.NewTime(time.Date(nowJST.Year(), nowJST.Month(), nowJST.Day(), 23, 59, 59, 59, jst).UTC())
 		limit  = optional.NewInt32(100)
 		bot    = optional.NewBool(false)
 		hasURL = optional.NewBool(false)

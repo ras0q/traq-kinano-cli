@@ -22,7 +22,7 @@ func SetupCron() {
 
 	c := cron.NewWithLocation(time.FixedZone("Asia/Tokyo", 9*60*60))
 	c.AddFunc("0 50 23 * *", func() {
-		if err := PostWordcloutToTraq(w); err != nil {
+		if err := PostWordcloudToTraq(w); err != nil {
 			log.Println("[ERROR]", err)
 		}
 	})
