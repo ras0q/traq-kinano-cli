@@ -6,6 +6,7 @@ import (
 	"image/png"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -28,11 +29,20 @@ func SetupCron() {
 			panic(fmt.Errorf("Error generating wordcloud: %w", err))
 		}
 
-		file, _ := os.Create("wordcloud.png")
+		path, _ := filepath.Abs("./wordcloud.png")
+		file, err := os.Create(path)
+		if err != nil {
+			panic(fmt.Errorf("Error creating wordcloud file: %w", err))
+		}
 		defer file.Close()
 
 		if err := png.Encode(file, img); err != nil {
 			panic(fmt.Errorf("Error encoding wordcloud: %w", err))
+		}
+
+		file, err = os.Open(path)
+		if err != nil {
+			panic(fmt.Errorf("Error opening wordcloud file: %w", err))
 		}
 
 		if err := SendFile(file, config.Traq.BotCh); err != nil {

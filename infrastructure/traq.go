@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"regexp"
 	"sync"
@@ -62,13 +63,17 @@ func (w *writer) Write(p []byte) (int, error) {
 }
 
 func SendFile(file *os.File, channelID string) error {
-	_, _, err := client.FileApi.PostFile(
+	_, res, err := client.FileApi.PostFile(
 		auth,
 		file,
 		channelID,
 	)
 	if err != nil {
 		return err
+	}
+
+	if res.StatusCode != 200 {
+		return fmt.Errorf("Error sending file: %s", res.Status)
 	}
 
 	return nil
