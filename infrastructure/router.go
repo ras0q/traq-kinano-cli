@@ -54,7 +54,7 @@ func SetupCron() {
 }
 
 func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
-	w := NewWriter(config.Bot.Accesstoken)
+	w := NewWriter()
 
 	b, err := traqbot.NewBot(&traqbot.Options{
 		AccessToken:   config.Bot.Accesstoken,

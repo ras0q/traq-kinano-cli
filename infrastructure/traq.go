@@ -24,7 +24,7 @@ type writer struct {
 	embed     bool // Default: true
 }
 
-func NewWriter(accessToken string) cmd.Writer {
+func NewWriter() cmd.Writer {
 	return &writer{
 		channelID: "",
 		embed:     true,
@@ -130,9 +130,10 @@ func getTraqDailyMsgs() ([]string, error) {
 				},
 			)
 
+			r := regexp.MustCompile(`!\{.+\}`)
 			for _, msg := range res.Hits {
 				if msg.Content != "" {
-					plain := regexp.MustCompile("!\\{.+\\}").ReplaceAllString(msg.Content, "")
+					plain := r.ReplaceAllString(msg.Content, "")
 					msgs = append(msgs, plain)
 				}
 			}
