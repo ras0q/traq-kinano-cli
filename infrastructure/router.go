@@ -18,9 +18,11 @@ import (
 )
 
 func SetupCron() {
+	w := NewWriter()
+
 	c := cron.NewWithLocation(time.FixedZone("Asia/Tokyo", 9*60*60))
 	c.AddFunc("0 50 23 * *", func() {
-		if err := PostWordcloutToTraq(NewWriter()); err != nil {
+		if err := PostWordcloutToTraq(w); err != nil {
 			log.Println("[ERROR]", err)
 		}
 	})
