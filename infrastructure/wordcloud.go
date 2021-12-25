@@ -26,6 +26,10 @@ func generateWordcloud() (image.Image, error) {
 		return nil, err
 	}
 
+	if len(wordMap) == 0 {
+		return nil, fmt.Errorf("No wordcloud data")
+	}
+
 	wc := wordclouds.NewWordcloud(
 		wordMap,
 		wordclouds.FontFile("assets/fonts/rounded-l-mplus-2c-medium.ttf"),

@@ -103,7 +103,9 @@ func CreateTraqFile(file *os.File, channelID string) (string, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode >= 300 {
-		return "", fmt.Errorf("Error sending file: %s", res.Status)
+		b, _ := io.ReadAll(res.Body)
+
+		return "", fmt.Errorf("Error sending file: %s %s", res.Status, string(b))
 	}
 
 	var traqFile traq.FileInfo
@@ -124,54 +126,43 @@ func getTraqDailyMsgs() ([]string, error) {
 		limit  = optional.NewInt32(100)
 		bot    = optional.NewBool(false)
 		hasURL = optional.NewBool(false)
+		r      = regexp.MustCompile(`!\{.+\}`)
+		msgs   = make([]string, 0, 5000)
 	)
 
-	res, _, err := client.MessageApi.SearchMessages(
-		auth,
-		&traq.MessageApiSearchMessagesOpts{
-			Before: before,
-			After:  after,
-			Limit:  limit,
-			Bot:    bot,
-			HasURL: hasURL,
-		},
-	)
-	if err != nil {
-		return nil, err
-	}
+	searchFunc := func(offset int32) int {
+		res, _, _ := client.MessageApi.SearchMessages(
+			auth,
+			&traq.MessageApiSearchMessagesOpts{
+				Before: before,
+				After:  after,
+				Limit:  limit,
+				Offset: optional.NewInt32(int32(offset * 100)),
+				Bot:    bot,
+				HasURL: hasURL,
+			},
+		)
 
-	msgs := make([]string, 0, res.TotalHits)
-	for _, msg := range res.Hits {
-		if msg.Content != "" {
-			msgs = append(msgs, msg.Content)
+		for _, msg := range res.Hits {
+			if msg.Content != "" {
+				plain := r.ReplaceAllString(msg.Content, "")
+				msgs = append(msgs, plain)
+			}
 		}
+
+		return len(res.Hits)
 	}
 
-	num := int(res.TotalHits) / 100 // 並列で回す数
+	// 総メッセージ数を取得するために1かい先にAPIを叩く
+	totalHits := searchFunc(0)
+
+	num := totalHits / 100 // 並列で回す数
 	wg := sync.WaitGroup{}
 	wg.Add(num)
 	for i := 0; i < num; i++ {
 		go func(i int) {
 			defer wg.Done()
-			res, _, _ := client.MessageApi.SearchMessages(
-				auth,
-				&traq.MessageApiSearchMessagesOpts{
-					Before: before,
-					After:  after,
-					Limit:  limit,
-					Offset: optional.NewInt32(int32(i * 100)),
-					Bot:    bot,
-					HasURL: hasURL,
-				},
-			)
-
-			r := regexp.MustCompile(`!\{.+\}`)
-			for _, msg := range res.Hits {
-				if msg.Content != "" {
-					plain := r.ReplaceAllString(msg.Content, "")
-					msgs = append(msgs, plain)
-				}
-			}
+			searchFunc(int32(i))
 		}(i)
 	}
 	wg.Wait()
