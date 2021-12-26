@@ -26,8 +26,9 @@ type sqlCfg struct {
 }
 
 type traqCfg struct {
-	HomeCh string
-	BotCh  string
+	HomeCh  string
+	BotCh   string
+	BotDMCh string
 }
 
 var (
@@ -53,6 +54,7 @@ func init() {
 
 	Traq.HomeCh = mustGetenv("TRAQ_HOME_CHANNEL_ID")
 	Traq.BotCh = mustGetenv("TRAQ_BOT_CHANNEL_ID")
+	Traq.BotDMCh = mustGetenv("TRAQ_BOT_DM_CHANNEL_ID")
 }
 
 func mustGetenv(name string) string {
