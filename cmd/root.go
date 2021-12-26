@@ -8,7 +8,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Ras96/traq-kinano-cli/interfaces/external"
 	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
+	"github.com/gofrs/uuid"
 	"github.com/spf13/cobra"
 	"github.com/traPtitech/traq-ws-bot/payload"
 )
@@ -24,11 +26,11 @@ type Cmds struct {
 	ctx context.Context
 	h   handler.Handlers
 	pl  *payload.MessageCreated
-	w   Writer
+	q   external.TraqAPI
 }
 
-func NewCmds(ctx context.Context, h handler.Handlers, pl *payload.MessageCreated, w Writer) *Cmds {
-	return &Cmds{ctx, h, pl, w}
+func NewCmds(ctx context.Context, h handler.Handlers, pl *payload.MessageCreated, q external.TraqAPI) *Cmds {
+	return &Cmds{ctx, h, pl, q}
 }
 
 func (c *Cmds) rootCmd() *cobra.Command {
@@ -48,15 +50,23 @@ func (c *Cmds) Execute(args []string) {
 	c.addSubCmds(root)
 	root.SetArgs(args)
 	root.SetHelpFunc(func(cmd *cobra.Command, args []string) {
-		_, _ = c.w.
-			SetChannelID(c.pl.Message.ChannelID).
-			Write([]byte(fmt.Sprintf("```txt\n%s```", cmd.UsageString())))
+		if err := c.q.PostMessage(
+			uuid.FromStringOrNil(c.pl.Message.ChannelID),
+			fmt.Sprintf("```txt\n%s```", cmd.UsageString()),
+			true,
+		); err != nil {
+			panic(err)
+		}
 	})
 
 	if err := root.Execute(); err != nil {
-		_, _ = c.w.
-			SetChannelID(c.pl.Message.ChannelID).
-			Write([]byte(fmt.Sprintf("```\n%s```", err.Error())))
+		if err2 := c.q.PostMessage(
+			uuid.FromStringOrNil(c.pl.Message.ChannelID),
+			fmt.Sprintf("```\n%s```", err.Error()),
+			true,
+		); err2 != nil {
+			panic(err2)
+		}
 	}
 }
 

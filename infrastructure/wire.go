@@ -9,6 +9,7 @@ import (
 
 	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/ent"
+	"github.com/Ras96/traq-kinano-cli/interfaces/external"
 	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
 	"github.com/Ras96/traq-kinano-cli/interfaces/repository"
 	"github.com/Ras96/traq-kinano-cli/usecases/service"
@@ -16,7 +17,7 @@ import (
 	"github.com/traPtitech/traq-ws-bot/payload"
 )
 
-func InjectCmds(ctx context.Context, client *ent.Client, pl *payload.MessageCreated, w cmd.Writer) *cmd.Cmds {
+func InjectCmds(ctx context.Context, client *ent.Client, pl *payload.MessageCreated, q external.TraqAPI) *cmd.Cmds {
 	wire.Build(
 		cmd.NewCmds,
 		handler.NewHandlers,

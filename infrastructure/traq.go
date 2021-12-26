@@ -14,9 +14,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Ras96/traq-kinano-cli/cmd"
+	"github.com/Ras96/traq-kinano-cli/interfaces/external"
 	"github.com/Ras96/traq-kinano-cli/util/config"
 	"github.com/antihax/optional"
+	"github.com/gofrs/uuid"
 	"github.com/sapphi-red/go-traq"
 )
 
@@ -25,50 +26,57 @@ var (
 	auth   = context.WithValue(context.Background(), traq.ContextAccessToken, config.Bot.Accesstoken)
 )
 
-type writer struct {
-	channelID string
-	embed     bool // Default: true
+type traqAPI struct {
+	client *traq.APIClient
+	auth   context.Context
 }
 
-func NewWriter() cmd.Writer {
-	return &writer{
-		channelID: "",
-		embed:     true,
+func NewTraqAPI() external.TraqAPI {
+	return &traqAPI{
+		client: client,
+		auth:   auth,
 	}
 }
 
-func (w *writer) SetChannelID(channelID string) cmd.Writer {
-	w.channelID = channelID
-
-	return w
-}
-
-func (w *writer) SetEmbed(embed bool) cmd.Writer {
-	w.embed = embed
-
-	return w
-}
-
-// Implement io.Writer interface
-func (w *writer) Write(p []byte) (int, error) {
-	_, _, err := client.MessageApi.PostMessage(
+func (t *traqAPI) SearchMessages(opts external.SearchMessagesOpts) (int, []string, error) {
+	res, _, _ := client.MessageApi.SearchMessages(
 		auth,
-		w.channelID,
+		&traq.MessageApiSearchMessagesOpts{
+			After:  opts.After,
+			Before: opts.Before,
+			Bot:    opts.Bot,
+			Limit:  opts.Limit,
+			Offset: opts.Offset,
+		},
+	)
+
+	msgs := make([]string, len(res.Hits))
+	for i, hit := range res.Hits {
+		msgs[i] = hit.Content
+	}
+
+	return int(res.TotalHits), msgs, nil
+}
+
+func (t *traqAPI) PostMessage(channelID uuid.UUID, content string, embed bool) error {
+	_, _, err := t.client.MessageApi.PostMessage(
+		t.auth,
+		channelID.String(),
 		&traq.MessageApiPostMessageOpts{
 			PostMessageRequest: optional.NewInterface(traq.PostMessageRequest{
-				Content: string(p),
-				Embed:   w.embed,
+				Content: content,
+				Embed:   embed,
 			}),
 		},
 	)
 	if err != nil {
-		return 0, err
+		return fmt.Errorf("failed to post message: %w", err)
 	}
 
-	return len(p), nil
+	return nil
 }
 
-func CreateTraqFile(file *os.File, channelID string) (string, error) {
+func (t *traqAPI) PostFile(channelID uuid.UUID, file *os.File) (uuid.UUID, error) {
 	// NOTE: go-traqがcontent-typeをapplication/octet-streamにしてしまうので自前でAPIを叩く
 	var b bytes.Buffer
 	mw := multipart.NewWriter(&b)
@@ -79,11 +87,11 @@ func CreateTraqFile(file *os.File, channelID string) (string, error) {
 
 	pw, err := mw.CreatePart(mh)
 	if err != nil {
-		return "", fmt.Errorf("failed to create part: %w", err)
+		return uuid.Nil, fmt.Errorf("failed to create part: %w", err)
 	}
 
 	if _, err := io.Copy(pw, file); err != nil {
-		return "", fmt.Errorf("failed to copy file: %w", err)
+		return uuid.Nil, fmt.Errorf("failed to copy file: %w", err)
 	}
 
 	contentType := mw.FormDataContentType()
@@ -91,11 +99,11 @@ func CreateTraqFile(file *os.File, channelID string) (string, error) {
 
 	req, err := http.NewRequest(
 		"POST",
-		fmt.Sprintf("https://q.trap.jp/api/v3/files?channelId=%s", channelID),
+		fmt.Sprintf("https://q.trap.jp/api/v3/files?channelId=%s", channelID.String()),
 		&b,
 	)
 	if err != nil {
-		return "", fmt.Errorf("Error creating request: %w", err)
+		return uuid.Nil, fmt.Errorf("Error creating request: %w", err)
 	}
 
 	req.Header.Set("Content-Type", contentType)
@@ -104,22 +112,22 @@ func CreateTraqFile(file *os.File, channelID string) (string, error) {
 	client := new(http.Client)
 	res, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("Error sending request: %w", err)
+		return uuid.Nil, fmt.Errorf("Error sending request: %w", err)
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode >= 300 {
 		b, _ := io.ReadAll(res.Body)
 
-		return "", fmt.Errorf("Error creating file: %s %s", res.Status, string(b))
+		return uuid.Nil, fmt.Errorf("Error creating file: %s %s", res.Status, string(b))
 	}
 
 	var traqFile traq.FileInfo
 	if err := json.NewDecoder(res.Body).Decode(&traqFile); err != nil {
-		return "", fmt.Errorf("Error decoding response: %w", err)
+		return uuid.Nil, fmt.Errorf("Error decoding response: %w", err)
 	}
 
-	return traqFile.Id, nil
+	return uuid.FromStringOrNil(traqFile.Id), nil
 }
 
 func getTraqDailyMsgs() ([]string, error) {

@@ -9,9 +9,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Ras96/traq-kinano-cli/cmd"
+	"github.com/Ras96/traq-kinano-cli/interfaces/external"
 	"github.com/Ras96/traq-kinano-cli/util/config"
 	mecab "github.com/bluele/mecab-golang"
+	"github.com/gofrs/uuid"
 	"github.com/psykhi/wordclouds"
 )
 
@@ -94,7 +95,7 @@ func parseToNode(msgs []string) (map[string]int, error) {
 	return wordMap, nil
 }
 
-func PostWordcloudToTraq(w cmd.Writer) error {
+func PostWordcloudToTraq(q external.TraqAPI) error {
 	img, err := generateWordcloud()
 	if err != nil {
 		return fmt.Errorf("Error generating wordcloud: %w", err)
@@ -113,15 +114,19 @@ func PostWordcloudToTraq(w cmd.Writer) error {
 
 	file.Seek(0, os.SEEK_SET)
 
-	cid := config.Traq.HomeCh
-	fid, err := CreateTraqFile(file, cid)
+	cid := uuid.FromStringOrNil(config.Traq.HomeCh)
+	fid, err := q.PostFile(cid, file)
 	if err != nil {
 		return fmt.Errorf("Error creating wordcloud: %w", err)
 	}
 
-	w.
-		SetChannelID(cid).
-		Write([]byte("https://q.trap.jp/files/" + fid))
+	if err := q.PostMessage(
+		cid,
+		"https://q.trap.jp/files/"+fid.String(),
+		true,
+	); err != nil {
+		return fmt.Errorf("Error posting wordcloud: %w", err)
+	}
 
 	return nil
 }

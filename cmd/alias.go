@@ -22,9 +22,13 @@ func (c *Cmds) aliasCmd() *cobra.Command {
 				return err
 			}
 
-			_, _ = c.w.
-				SetChannelID(c.pl.Message.ChannelID).
-				Write([]byte(alias.Long))
+			if err := c.q.PostMessage(
+				uuid.FromStringOrNil(c.pl.Message.ChannelID),
+				alias.Long,
+				true,
+			); err != nil {
+				return err
+			}
 
 			return nil
 		},
@@ -51,9 +55,13 @@ func (c *Cmds) addAliasCmd() *cobra.Command {
 				return err
 			}
 
-			_, _ = c.w.
-				SetChannelID(c.pl.Message.ChannelID).
-				Write([]byte(":attoteki_seicho:"))
+			if err := c.q.PostMessage(
+				uuid.FromStringOrNil(c.pl.Message.ChannelID),
+				":attoteki_seicho:",
+				true,
+			); err != nil {
+				return err
+			}
 
 			return nil
 		},

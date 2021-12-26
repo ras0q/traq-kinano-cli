@@ -5,7 +5,9 @@ import (
 )
 
 func main() {
-	infrastructure.SetupCron()
+	traqAPI := infrastructure.NewTraqAPI()
+
+	infrastructure.SetupCron(traqAPI)
 
 	entClient, err := infrastructure.NewEntClient()
 	if err != nil {
@@ -13,7 +15,7 @@ func main() {
 	}
 	defer entClient.Close()
 
-	bot, err := infrastructure.NewWsBot(entClient)
+	bot, err := infrastructure.NewWsBot(entClient, traqAPI)
 	if err != nil {
 		panic("Error creating server: " + err.Error())
 	}

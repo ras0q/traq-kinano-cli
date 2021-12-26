@@ -8,7 +8,9 @@ import (
 
 	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/ent"
+	"github.com/Ras96/traq-kinano-cli/interfaces/external"
 	"github.com/Ras96/traq-kinano-cli/util/config"
+	"github.com/gofrs/uuid"
 	"github.com/robfig/cron"
 
 	// mysql driver
@@ -17,12 +19,10 @@ import (
 	"github.com/traPtitech/traq-ws-bot/payload"
 )
 
-func SetupCron() {
-	w := NewWriter()
-
+func SetupCron(q external.TraqAPI) {
 	c := cron.NewWithLocation(time.FixedZone("Asia/Tokyo", 9*60*60))
 	c.AddFunc("0 50 23 * *", func() {
-		if err := PostWordcloudToTraq(w); err != nil {
+		if err := PostWordcloudToTraq(q); err != nil {
 			log.Println("[ERROR]", err)
 		}
 	})
@@ -30,9 +30,7 @@ func SetupCron() {
 	c.Start()
 }
 
-func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
-	w := NewWriter()
-
+func NewWsBot(client *ent.Client, q external.TraqAPI) (*traqbot.Bot, error) {
 	b, err := traqbot.NewBot(&traqbot.Options{
 		AccessToken:   config.Bot.Accesstoken,
 		Origin:        "wss://q.trap.jp",
@@ -60,14 +58,18 @@ func NewWsBot(client *ent.Client) (*traqbot.Bot, error) {
 		}
 
 		if _, ok := cmd.CmdNames[args[0]]; ok {
-			cmds := InjectCmds(context.Background(), client, pl, w)
+			cmds := InjectCmds(context.Background(), client, pl, q)
 			cmds.Execute(args)
 		}
 	})
 
-	w.
-		SetChannelID(config.Traq.BotCh).
-		Write([]byte("デプロイ完了!"))
+	if err := NewTraqAPI().PostMessage(
+		uuid.FromStringOrNil(config.Traq.BotCh),
+		"デプロイ完了!",
+		true,
+	); err != nil {
+		return nil, err
+	}
 
 	return b, nil
 }

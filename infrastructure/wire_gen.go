@@ -10,22 +10,19 @@ import (
 	"context"
 	"github.com/Ras96/traq-kinano-cli/cmd"
 	"github.com/Ras96/traq-kinano-cli/ent"
+	"github.com/Ras96/traq-kinano-cli/interfaces/external"
 	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
 	"github.com/Ras96/traq-kinano-cli/interfaces/repository"
 	"github.com/Ras96/traq-kinano-cli/usecases/service"
 	"github.com/traPtitech/traq-ws-bot/payload"
 )
 
-import (
-	_ "github.com/go-sql-driver/mysql"
-)
-
 // Injectors from wire.go:
 
-func InjectCmds(ctx context.Context, client *ent.Client, pl *payload.MessageCreated, w cmd.Writer) *cmd.Cmds {
+func InjectCmds(ctx context.Context, client *ent.Client, pl *payload.MessageCreated, q external.TraqAPI) *cmd.Cmds {
 	repositories := repository.NewRepositories(client)
 	services := service.NewServices()
 	handlers := handler.NewHandlers(repositories, services)
-	cmds := cmd.NewCmds(ctx, handlers, pl, w)
+	cmds := cmd.NewCmds(ctx, handlers, pl, q)
 	return cmds
 }
