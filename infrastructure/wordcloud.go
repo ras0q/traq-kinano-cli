@@ -16,6 +16,11 @@ import (
 	"github.com/psykhi/wordclouds"
 )
 
+// wordcloudに含めない単語
+var excludeWordMap = map[string]struct{}{
+	"trap": {},
+}
+
 func generateWordcloud() (image.Image, error) {
 	msgs, err := getTraqDailyMsgs()
 	if err != nil {
@@ -39,11 +44,9 @@ func generateWordcloud() (image.Image, error) {
 		wordclouds.FontMaxSize(256),
 		wordclouds.FontMinSize(32),
 		wordclouds.Colors([]color.Color{
-			color.RGBA{0x1b, 0x1b, 0x1b, 0xff},
-			color.RGBA{0x48, 0x48, 0x4B, 0xff},
-			color.RGBA{0x59, 0x3a, 0xee, 0xff},
-			color.RGBA{0x65, 0xCD, 0xFA, 0xff},
-			color.RGBA{0x70, 0xD6, 0xBF, 0xff},
+			color.RGBA{0xef, 0xb0, 0x19, 0xff}, //黄色
+			color.RGBA{0x4a, 0x21, 0x01, 0xff}, //茶色
+			color.RGBA{0xa4, 0x6f, 0x30, 0xff}, //薄茶色
 		}),
 	)
 
@@ -76,7 +79,9 @@ func parseToNode(msgs []string) (map[string]int, error) {
 			fea := strings.Split(node.Feature(), ",")
 			sur := node.Surface()
 			if fea[0] == "名詞" && fea[1] == "一般" && len(sur) > 1 {
-				if _, ok := wm[sur]; !ok {
+				_, isAlreadyAppeared := wm[sur]
+				_, isExcludedWord := excludeWordMap[strings.ToLower(sur)]
+				if !isAlreadyAppeared && !isExcludedWord {
 					wm[sur] = struct{}{}
 				}
 			}
