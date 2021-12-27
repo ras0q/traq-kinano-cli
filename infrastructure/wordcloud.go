@@ -41,12 +41,13 @@ func generateWordcloud() (image.Image, error) {
 		wordclouds.FontFile("assets/fonts/rounded-l-mplus-2c-medium.ttf"),
 		wordclouds.Height(1024),
 		wordclouds.Width(1024),
-		wordclouds.FontMaxSize(256),
-		wordclouds.FontMinSize(32),
+		wordclouds.FontMaxSize(128),
+		wordclouds.FontMinSize(8),
 		wordclouds.Colors([]color.Color{
-			color.RGBA{0xef, 0xb0, 0x19, 0xff}, //黄色
-			color.RGBA{0x4a, 0x21, 0x01, 0xff}, //茶色
-			color.RGBA{0xa4, 0x6f, 0x30, 0xff}, //薄茶色
+			color.RGBA{247, 144, 30, 255},
+			color.RGBA{194, 69, 39, 255},
+			color.RGBA{38, 103, 118, 255},
+			color.RGBA{173, 210, 224, 255},
 		}),
 	)
 
