@@ -21,19 +21,19 @@ var excludeWordMap = map[string]struct{}{
 	"trap": {},
 }
 
-func generateWordcloud() (image.Image, error) {
+func generateWordcloud() (image.Image, string, error) {
 	msgs, err := getTraqDailyMsgs()
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	wordMap, err := parseToNode(msgs)
+	wordMap, best, err := parseToNode(msgs)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	if len(wordMap) == 0 {
-		return nil, fmt.Errorf("No wordcloud data")
+		return nil, "", fmt.Errorf("No wordcloud data")
 	}
 
 	wc := wordclouds.NewWordcloud(
@@ -51,18 +51,18 @@ func generateWordcloud() (image.Image, error) {
 		}),
 	)
 
-	return wc.Draw(), nil
+	return wc.Draw(), best, nil
 }
 
-func parseToNode(msgs []string) (map[string]int, error) {
+func parseToNode(msgs []string) (map[string]int, string, error) {
 	m, err := mecab.New("-Owakati")
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	tg, err := m.NewTagger()
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	defer tg.Destroy()
 
@@ -70,7 +70,7 @@ func parseToNode(msgs []string) (map[string]int, error) {
 	for _, msg := range msgs {
 		lt, err := m.NewLattice(msg)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
 
 		node := tg.ParseToNode(lt)
@@ -98,11 +98,23 @@ func parseToNode(msgs []string) (map[string]int, error) {
 		lt.Destroy()
 	}
 
-	return wordMap, nil
+	var (
+		best      string
+		bestCount int
+	)
+
+	for word, cnt := range wordMap {
+		if cnt > bestCount {
+			best = word
+			bestCount = cnt
+		}
+	}
+
+	return wordMap, best, nil
 }
 
 func PostWordcloudToTraq(q external.TraqAPI) error {
-	img, err := generateWordcloud()
+	img, best, err := generateWordcloud()
 	if err != nil {
 		return fmt.Errorf("Error generating wordcloud: %w", err)
 	}
@@ -128,7 +140,7 @@ func PostWordcloudToTraq(q external.TraqAPI) error {
 
 	if err := q.PostMessage(
 		cid,
-		"https://q.trap.jp/files/"+fid.String(),
+		fmt.Sprintf("今日は『%s』の日だったやんね:tada:\nhttps://q.trap.jp/files/%s", best, fid.String()),
 		true,
 	); err != nil {
 		return fmt.Errorf("Error posting wordcloud: %w", err)
