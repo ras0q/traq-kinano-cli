@@ -17,8 +17,19 @@ import (
 )
 
 // wordcloudに含めない単語
-var excludeWordMap = map[string]struct{}{
-	"trap": {},
+var excludeWords = []string{
+	"trap",
+	"感じ",
+}
+
+func isExcludedWord(word string) bool {
+	for _, w := range excludeWords {
+		if w == word {
+			return true
+		}
+	}
+
+	return false
 }
 
 func generateWordcloud() (image.Image, string, error) {
@@ -78,11 +89,9 @@ func parseToNode(msgs []string) (map[string]int, string, error) {
 		wm := make(map[string]struct{})
 		for {
 			fea := strings.Split(node.Feature(), ",")
-			sur := node.Surface()
+			sur := strings.ToLower(node.Surface())
 			if fea[0] == "名詞" && fea[1] == "一般" && len(sur) > 1 {
-				_, isAlreadyAppeared := wm[sur]
-				_, isExcludedWord := excludeWordMap[strings.ToLower(sur)]
-				if !isAlreadyAppeared && !isExcludedWord {
+				if _, found := wm[sur]; !found && !isExcludedWord(sur) {
 					wm[sur] = struct{}{}
 				}
 			}
