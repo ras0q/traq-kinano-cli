@@ -131,20 +131,17 @@ func (t *traqAPI) PostFile(channelID uuid.UUID, file *os.File) (uuid.UUID, error
 }
 
 func getTraqDailyMsgs() ([]string, error) {
-	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
-
 	var (
-		nowJST = time.Now().UTC().In(jst)
-		after  = optional.NewTime(time.Date(nowJST.Year(), nowJST.Month(), nowJST.Day(), 0, 0, 0, 0, jst).UTC())
-		before = optional.NewTime(time.Date(nowJST.Year(), nowJST.Month(), nowJST.Day(), 23, 59, 59, 59, jst).UTC())
+		now    = time.Now().UTC()
+		after  = optional.NewTime(time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC))
+		before = optional.NewTime(time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 0, time.UTC))
 		limit  = optional.NewInt32(100)
 		bot    = optional.NewBool(false)
-		hasURL = optional.NewBool(false)
-		r      = regexp.MustCompile(`!\{.+\}`)
+		r      = regexp.MustCompile(`!\{.+\}|https?:\/\/.+(\s|$)`)
 		msgs   = make([]string, 0, 5000)
 	)
 
-	searchFunc := func(offset int32) int {
+	searchFunc := func(offset int) int {
 		res, _, _ := client.MessageApi.SearchMessages(
 			auth,
 			&traq.MessageApiSearchMessagesOpts{
@@ -153,7 +150,6 @@ func getTraqDailyMsgs() ([]string, error) {
 				Limit:  limit,
 				Offset: optional.NewInt32(int32(offset * 100)),
 				Bot:    bot,
-				HasURL: hasURL,
 			},
 		)
 
@@ -164,7 +160,7 @@ func getTraqDailyMsgs() ([]string, error) {
 			}
 		}
 
-		return len(res.Hits)
+		return int(res.TotalHits)
 	}
 
 	// 総メッセージ数を取得するために1かい先にAPIを叩く
@@ -176,7 +172,7 @@ func getTraqDailyMsgs() ([]string, error) {
 	for i := 0; i < num; i++ {
 		go func(i int) {
 			defer wg.Done()
-			searchFunc(int32(i))
+			searchFunc(i)
 		}(i)
 	}
 	wg.Wait()
