@@ -20,6 +20,8 @@ import (
 var excludeWords = []string{
 	"trap",
 	"感じ",
+	"あと",
+	"ユーザー",
 }
 
 func isExcludedWord(word string) bool {
