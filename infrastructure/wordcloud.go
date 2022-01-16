@@ -1,7 +1,6 @@
 package infrastructure
 
 import (
-	"bufio"
 	"fmt"
 	"image"
 	"image/color"
@@ -23,7 +22,6 @@ var excludeWords = []string{
 	"感じ",
 	"あと",
 	"ユーザー",
-	"人",
 }
 
 func isExcludedWord(word string) bool {
@@ -90,17 +88,11 @@ func parseToNode(msgs []string) (map[string]int, string, error) {
 
 		node := tg.ParseToNode(lt)
 
-		f, _ := os.Create("/tmp/mecab.txt")
-		defer f.Close()
-
-		b := bufio.NewWriter(f)
-
 		wm := make(map[string]struct{})
 		for {
 			fea := strings.Split(node.Feature(), ",")
 			sur := strings.ToLower(node.Surface())
-			fmt.Fprintln(b, fea, sur)
-			if fea[1] == "一般" && len(sur) > 1 {
+			if fea[0] == "名詞" && fea[1] == "一般" && len(sur) > 1 {
 				if _, found := wm[sur]; !found && !isExcludedWord(sur) {
 					wm[sur] = struct{}{}
 				}
@@ -109,8 +101,6 @@ func parseToNode(msgs []string) (map[string]int, string, error) {
 				break
 			}
 		}
-
-		b.Flush()
 
 		for w := range wm {
 			wordMap[w]++
