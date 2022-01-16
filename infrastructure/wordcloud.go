@@ -18,6 +18,7 @@ import (
 
 // wordcloudに含めない単語
 var excludeWords = []string{
+	"人",
 	"trap",
 	"感じ",
 	"あと",
