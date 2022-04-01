@@ -7,8 +7,6 @@ import (
 func main() {
 	traqAPI := infrastructure.NewTraqAPI()
 
-	infrastructure.SetupCron(traqAPI)
-
 	entClient, err := infrastructure.NewEntClient()
 	if err != nil {
 		panic("Error creating client: " + err.Error())

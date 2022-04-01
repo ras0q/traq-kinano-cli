@@ -1,16 +1,12 @@
 package external
 
 import (
-	"os"
-
 	"github.com/antihax/optional"
 	"github.com/gofrs/uuid"
 )
 
 type TraqAPI interface {
-	SearchMessages(opts SearchMessagesOpts) (totalHits int, msgs []string, err error)
 	PostMessage(channelID uuid.UUID, content string, embed bool) (err error)
-	PostFile(channelID uuid.UUID, file *os.File) (fileID uuid.UUID, err error)
 }
 
 type SearchMessagesOpts struct {
