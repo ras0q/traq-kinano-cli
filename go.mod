@@ -1,4 +1,4 @@
-module github.com/Ras96/traq-kinano-cli
+module github.com/ras0q/traq-kinano-cli
 
 go 1.17
 

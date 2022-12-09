@@ -2,7 +2,7 @@
 
 package runtime
 
-// The schema-stitching logic is generated in github.com/Ras96/traq-kinano-cli/ent/runtime.go
+// The schema-stitching logic is generated in github.com/ras0q/traq-kinano-cli/ent/runtime.go
 
 const (
 	Version = "v0.9.1"                                          // Version of ent codegen.

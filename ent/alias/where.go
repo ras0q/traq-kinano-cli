@@ -4,7 +4,7 @@ package alias
 
 import (
 	"entgo.io/ent/dialect/sql"
-	"github.com/Ras96/traq-kinano-cli/ent/predicate"
+	"github.com/ras0q/traq-kinano-cli/ent/predicate"
 	"github.com/gofrs/uuid"
 )
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Ras96/traq-kinano-cli/infrastructure"
+	"github.com/ras0q/traq-kinano-cli/infrastructure"
 )
 
 func main() {

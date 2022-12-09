@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Ras96/traq-kinano-cli/ent/migrate"
+	"github.com/ras0q/traq-kinano-cli/ent/migrate"
 	"github.com/gofrs/uuid"
 
-	"github.com/Ras96/traq-kinano-cli/ent/alias"
+	"github.com/ras0q/traq-kinano-cli/ent/alias"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

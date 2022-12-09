@@ -3,10 +3,10 @@ package repository
 import (
 	"context"
 
-	"github.com/Ras96/traq-kinano-cli/ent"
-	"github.com/Ras96/traq-kinano-cli/ent/alias"
-	"github.com/Ras96/traq-kinano-cli/usecases/repository"
-	"github.com/Ras96/traq-kinano-cli/util/random"
+	"github.com/ras0q/traq-kinano-cli/ent"
+	"github.com/ras0q/traq-kinano-cli/ent/alias"
+	"github.com/ras0q/traq-kinano-cli/usecases/repository"
+	"github.com/ras0q/traq-kinano-cli/util/random"
 )
 
 func (r *repositories) CallAlias(ctx context.Context, short string) (*ent.Alias, error) {

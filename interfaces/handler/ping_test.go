@@ -4,11 +4,11 @@ package handler_test
 import (
 	"testing"
 
-	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
-	"github.com/Ras96/traq-kinano-cli/usecases/repository/mock_repository"
-	"github.com/Ras96/traq-kinano-cli/usecases/service"
-	"github.com/Ras96/traq-kinano-cli/util/assert"
 	"github.com/golang/mock/gomock"
+	"github.com/ras0q/traq-kinano-cli/interfaces/handler"
+	"github.com/ras0q/traq-kinano-cli/usecases/repository/mock_repository"
+	"github.com/ras0q/traq-kinano-cli/usecases/service"
+	"github.com/ras0q/traq-kinano-cli/util/assert"
 )
 
 func Test_handlers_Ping(t *testing.T) {

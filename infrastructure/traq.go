@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Ras96/traq-kinano-cli/interfaces/external"
-	"github.com/Ras96/traq-kinano-cli/util/config"
 	"github.com/antihax/optional"
 	"github.com/gofrs/uuid"
+	"github.com/ras0q/traq-kinano-cli/interfaces/external"
+	"github.com/ras0q/traq-kinano-cli/util/config"
 	"github.com/sapphi-red/go-traq"
 )
 

@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Ras96/traq-kinano-cli/ent/alias"
+	"github.com/ras0q/traq-kinano-cli/ent/alias"
 	"github.com/gofrs/uuid"
 )
 

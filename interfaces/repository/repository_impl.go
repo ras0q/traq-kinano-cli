@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/Ras96/traq-kinano-cli/ent"
-	"github.com/Ras96/traq-kinano-cli/usecases/repository"
+	"github.com/ras0q/traq-kinano-cli/ent"
+	"github.com/ras0q/traq-kinano-cli/usecases/repository"
 )
 
 type repositories struct {

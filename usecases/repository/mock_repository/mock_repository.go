@@ -1,8 +1,8 @@
 package mock_repository //nolint:revive,stylecheck
 
 import (
-	repository "github.com/Ras96/traq-kinano-cli/usecases/repository"
 	gomock "github.com/golang/mock/gomock"
+	repository "github.com/ras0q/traq-kinano-cli/usecases/repository"
 )
 
 type MockRepositories struct {

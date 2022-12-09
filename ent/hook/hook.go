@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Ras96/traq-kinano-cli/ent"
+	"github.com/ras0q/traq-kinano-cli/ent"
 )
 
 // The AliasFunc type is an adapter to allow the use of ordinary

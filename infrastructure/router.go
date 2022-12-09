@@ -5,11 +5,11 @@ import (
 	"log"
 	"strings"
 
-	"github.com/Ras96/traq-kinano-cli/cmd"
-	"github.com/Ras96/traq-kinano-cli/ent"
-	"github.com/Ras96/traq-kinano-cli/interfaces/external"
-	"github.com/Ras96/traq-kinano-cli/util/config"
 	"github.com/gofrs/uuid"
+	"github.com/ras0q/traq-kinano-cli/cmd"
+	"github.com/ras0q/traq-kinano-cli/ent"
+	"github.com/ras0q/traq-kinano-cli/interfaces/external"
+	"github.com/ras0q/traq-kinano-cli/util/config"
 
 	// mysql driver
 	_ "github.com/go-sql-driver/mysql"

@@ -5,7 +5,7 @@ import (
 
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/Ras96/traq-kinano-cli/ent"
+	"github.com/ras0q/traq-kinano-cli/ent"
 )
 
 type testRepository struct {

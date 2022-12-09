@@ -5,8 +5,8 @@ package repository
 import (
 	"context"
 
-	"github.com/Ras96/traq-kinano-cli/ent"
 	"github.com/gofrs/uuid"
+	"github.com/ras0q/traq-kinano-cli/ent"
 )
 
 type AliasRepository interface {

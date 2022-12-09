@@ -7,14 +7,14 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/Ras96/traq-kinano-cli/ent"
-	impl "github.com/Ras96/traq-kinano-cli/interfaces/repository"
-	repo "github.com/Ras96/traq-kinano-cli/usecases/repository"
-	"github.com/Ras96/traq-kinano-cli/util/assert"
-	"github.com/Ras96/traq-kinano-cli/util/random"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofrs/uuid"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/ras0q/traq-kinano-cli/ent"
+	impl "github.com/ras0q/traq-kinano-cli/interfaces/repository"
+	repo "github.com/ras0q/traq-kinano-cli/usecases/repository"
+	"github.com/ras0q/traq-kinano-cli/util/assert"
+	"github.com/ras0q/traq-kinano-cli/util/random"
 )
 
 func Test_repositories_CallAlias(t *testing.T) {

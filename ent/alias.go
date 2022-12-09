@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/Ras96/traq-kinano-cli/ent/alias"
+	"github.com/ras0q/traq-kinano-cli/ent/alias"
 	"github.com/gofrs/uuid"
 )
 

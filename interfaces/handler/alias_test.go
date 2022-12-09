@@ -6,16 +6,16 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/Ras96/traq-kinano-cli/ent"
-	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
-	"github.com/Ras96/traq-kinano-cli/usecases/repository"
-	"github.com/Ras96/traq-kinano-cli/usecases/repository/mock_repository"
-	"github.com/Ras96/traq-kinano-cli/usecases/service"
-	"github.com/Ras96/traq-kinano-cli/util/assert"
-	"github.com/Ras96/traq-kinano-cli/util/random"
 	"github.com/gofrs/uuid"
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/ras0q/traq-kinano-cli/ent"
+	"github.com/ras0q/traq-kinano-cli/interfaces/handler"
+	"github.com/ras0q/traq-kinano-cli/usecases/repository"
+	"github.com/ras0q/traq-kinano-cli/usecases/repository/mock_repository"
+	"github.com/ras0q/traq-kinano-cli/usecases/service"
+	"github.com/ras0q/traq-kinano-cli/util/assert"
+	"github.com/ras0q/traq-kinano-cli/util/random"
 )
 
 func Test_handlers_CallAlias(t *testing.T) {

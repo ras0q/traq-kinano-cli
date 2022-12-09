@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Ras96/traq-kinano-cli/infrastructure"
-	"github.com/Ras96/traq-kinano-cli/util/config"
-	"github.com/Ras96/traq-kinano-cli/util/random"
+	"github.com/ras0q/traq-kinano-cli/infrastructure"
+	"github.com/ras0q/traq-kinano-cli/util/config"
+	"github.com/ras0q/traq-kinano-cli/util/random"
 	"github.com/traPtitech/traq-ws-bot/payload"
 )
 

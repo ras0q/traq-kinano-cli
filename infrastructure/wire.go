@@ -7,13 +7,13 @@ package infrastructure
 import (
 	"context"
 
-	"github.com/Ras96/traq-kinano-cli/cmd"
-	"github.com/Ras96/traq-kinano-cli/ent"
-	"github.com/Ras96/traq-kinano-cli/interfaces/external"
-	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
-	"github.com/Ras96/traq-kinano-cli/interfaces/repository"
-	"github.com/Ras96/traq-kinano-cli/usecases/service"
 	"github.com/google/wire"
+	"github.com/ras0q/traq-kinano-cli/cmd"
+	"github.com/ras0q/traq-kinano-cli/ent"
+	"github.com/ras0q/traq-kinano-cli/interfaces/external"
+	"github.com/ras0q/traq-kinano-cli/interfaces/handler"
+	"github.com/ras0q/traq-kinano-cli/interfaces/repository"
+	"github.com/ras0q/traq-kinano-cli/usecases/service"
 	"github.com/traPtitech/traq-ws-bot/payload"
 )
 

@@ -1,6 +1,5 @@
 /*
-Copyright © 2021 Ras96 <asymptote.k.k@gmail.com>
-
+Copyright © 2021 ras0q <asymptote.k.k@gmail.com>
 */
 package cmd
 
@@ -8,9 +7,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Ras96/traq-kinano-cli/interfaces/external"
-	"github.com/Ras96/traq-kinano-cli/interfaces/handler"
 	"github.com/gofrs/uuid"
+	"github.com/ras0q/traq-kinano-cli/interfaces/external"
+	"github.com/ras0q/traq-kinano-cli/interfaces/handler"
 	"github.com/spf13/cobra"
 	"github.com/traPtitech/traq-ws-bot/payload"
 )

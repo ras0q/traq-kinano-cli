@@ -5,9 +5,9 @@ package enttest
 import (
 	"context"
 
-	"github.com/Ras96/traq-kinano-cli/ent"
+	"github.com/ras0q/traq-kinano-cli/ent"
 	// required by schema hooks.
-	_ "github.com/Ras96/traq-kinano-cli/ent/runtime"
+	_ "github.com/ras0q/traq-kinano-cli/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
 )

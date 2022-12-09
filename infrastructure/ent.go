@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Ras96/traq-kinano-cli/ent"
-	"github.com/Ras96/traq-kinano-cli/util/config"
+	"github.com/ras0q/traq-kinano-cli/ent"
+	"github.com/ras0q/traq-kinano-cli/util/config"
 )
 
 func NewEntClient() (*ent.Client, error) {

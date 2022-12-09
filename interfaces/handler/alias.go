@@ -3,9 +3,9 @@ package handler
 import (
 	"context"
 
-	"github.com/Ras96/traq-kinano-cli/ent"
-	"github.com/Ras96/traq-kinano-cli/usecases/repository"
 	"github.com/gofrs/uuid"
+	"github.com/ras0q/traq-kinano-cli/ent"
+	"github.com/ras0q/traq-kinano-cli/usecases/repository"
 )
 
 func (h *handlers) CallAlias(ctx context.Context, short string) (*ent.Alias, error) {

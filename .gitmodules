@@ -1,4 +1,4 @@
 [submodule ".vscode/gotests-template"]
 	path = .vscode/gotests-template
-	url = https://github.com/Ras96/gotests-template.git
+	url = https://github.com/ras0q/gotests-template.git
 	branch = main

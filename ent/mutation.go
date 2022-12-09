@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/Ras96/traq-kinano-cli/ent/alias"
-	"github.com/Ras96/traq-kinano-cli/ent/predicate"
+	"github.com/ras0q/traq-kinano-cli/ent/alias"
+	"github.com/ras0q/traq-kinano-cli/ent/predicate"
 	"github.com/gofrs/uuid"
 
 	"entgo.io/ent"

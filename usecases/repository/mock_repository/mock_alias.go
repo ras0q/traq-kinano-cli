@@ -8,8 +8,8 @@ import (
 	context "context"
 	reflect "reflect"
 
-	ent "github.com/Ras96/traq-kinano-cli/ent"
-	repository "github.com/Ras96/traq-kinano-cli/usecases/repository"
+	ent "github.com/ras0q/traq-kinano-cli/ent"
+	repository "github.com/ras0q/traq-kinano-cli/usecases/repository"
 	gomock "github.com/golang/mock/gomock"
 )
 
